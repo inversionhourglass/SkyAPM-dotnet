@@ -53,7 +53,7 @@ namespace SkyApm.Diagnostics.AspNetCore.Handlers
 
         public void BeginRequest(ITracingContext tracingContext, HttpContext httpContext)
         {
-            var context = tracingContext.CreateEntrySegmentContext(httpContext.Request.Path,
+            var context = tracingContext.CreateEntry(httpContext.Request.Path,
                 new HttpRequestCarrierHeaderCollection(httpContext.Request));
             context.Span.SpanLayer = SpanLayer.HTTP;
             context.Span.Component = Common.Components.ASPNETCORE;
@@ -84,15 +84,15 @@ namespace SkyApm.Diagnostics.AspNetCore.Handlers
             }
         }
 
-        public void EndRequest(SegmentContext segmentContext, HttpContext httpContext)
+        public void EndRequest(SpanOrSegmentContext context, HttpContext httpContext)
         {
             var statusCode = httpContext.Response.StatusCode;
             if (statusCode >= 400)
             {
-                segmentContext.Span.ErrorOccurred();
+                context.Span.ErrorOccurred();
             }
 
-            segmentContext.Span.AddTag(Tags.STATUS_CODE, statusCode);
+            context.Span.AddTag(Tags.STATUS_CODE, statusCode);
         }
 
         private string CollectCookies(HttpContext httpContext, IEnumerable<string> keys)

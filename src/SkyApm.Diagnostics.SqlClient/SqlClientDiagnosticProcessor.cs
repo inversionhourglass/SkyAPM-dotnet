@@ -27,14 +27,11 @@ namespace SkyApm.Diagnostics.SqlClient
     public class SqlClientTracingDiagnosticProcessor : ITracingDiagnosticProcessor
     {
         private readonly ITracingContext _tracingContext;
-        private readonly IExitSegmentContextAccessor _contextAccessor;
         private readonly TracingConfig _tracingConfig;
 
-        public SqlClientTracingDiagnosticProcessor(ITracingContext tracingContext,
-            IExitSegmentContextAccessor contextAccessor, IConfigAccessor configAccessor)
+        public SqlClientTracingDiagnosticProcessor(ITracingContext tracingContext, IConfigAccessor configAccessor)
         {
             _tracingContext = tracingContext;
-            _contextAccessor = contextAccessor;
             _tracingConfig = configAccessor.Get<TracingConfig>();
         }
 
@@ -51,7 +48,7 @@ namespace SkyApm.Diagnostics.SqlClient
         [DiagnosticName(SqlClientDiagnosticStrings.SqlBeforeExecuteCommand)]
         public void BeforeExecuteCommand([Property(Name = "Command")] DbCommand sqlCommand)
         {
-            var context = _tracingContext.CreateExitSegmentContext(ResolveOperationName(sqlCommand),
+            var context = _tracingContext.CreateExit(ResolveOperationName(sqlCommand),
                 sqlCommand.Connection.DataSource);
             context.Span.SpanLayer = Tracing.Segments.SpanLayer.DB;
             context.Span.Component = Common.Components.SQLCLIENT;
@@ -64,21 +61,21 @@ namespace SkyApm.Diagnostics.SqlClient
         [DiagnosticName(SqlClientDiagnosticStrings.SqlAfterExecuteCommand)]
         public void AfterExecuteCommand()
         {
-            var context = _contextAccessor.Context;
+            var context = _tracingContext.CurrentExit;
             if (context != null)
             {
-                _tracingContext.Release(context);
+                _tracingContext.Finish(context);
             }
         }
 
         [DiagnosticName(SqlClientDiagnosticStrings.SqlErrorExecuteCommand)]
         public void ErrorExecuteCommand([Property(Name = "Exception")] Exception ex)
         {
-            var context = _contextAccessor.Context;
+            var context = _tracingContext.CurrentExit;
             if (context != null)
             {
                 context.Span.ErrorOccurred(ex, _tracingConfig);
-                _tracingContext.Release(context);
+                _tracingContext.Finish(context);
             }
         }
         #endregion

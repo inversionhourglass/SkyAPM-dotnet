@@ -53,21 +53,19 @@ namespace SkyApm.Diagnostics.FreeSql
         public string ListenerName => "FreeSqlDiagnosticListener";
 
         private readonly ITracingContext _tracingContext;
-        private readonly ILocalSegmentContextAccessor _localSegmentContextAccessor;
         private readonly TracingConfig _tracingConfig;
         public FreeSqlTracingDiagnosticProcessor(ITracingContext tracingContext,
-            ILocalSegmentContextAccessor localSegmentContextAccessor, IConfigAccessor configAccessor)
+            IConfigAccessor configAccessor)
         {
             _tracingContext = tracingContext;
-            _localSegmentContextAccessor = localSegmentContextAccessor;
             _tracingConfig = configAccessor.Get<TracingConfig>();
         }
 
-        private SegmentContext CreateFreeSqlLocalSegmentContext(string operation)
+        private SpanOrSegmentContext CreateFreeSqlLocalSegmentContext(string operation)
         {
-            var context = _tracingContext.CreateLocalSegmentContext(operation);
+            var context = _tracingContext.CreateLocal(operation);
             context.Span.SpanLayer = SpanLayer.DB;
-            context.Span.Component = Common.Components.Free_SQL; 
+            context.Span.Component = Common.Components.Free_SQL;
             context.Span.AddTag(Common.Tags.DB_TYPE, "Sql");
             return context;
         }
@@ -82,12 +80,12 @@ namespace SkyApm.Diagnostics.FreeSql
         [DiagnosticName(FreeSql_CurdAfter)]
         public void CurdAfter([Object] CurdAfterEventArgs eventData)
         {
-            var context = _localSegmentContextAccessor.Context;
+            var context = _tracingContext.CurrentLocal;
             if (context != null)
             {
                 if (eventData?.Exception != null)
                     context.Span.ErrorOccurred(eventData.Exception, _tracingConfig);
-                _tracingContext.Release(context);
+                _tracingContext.Finish(context);
             }
         }
         #endregion
@@ -102,14 +100,14 @@ namespace SkyApm.Diagnostics.FreeSql
         [DiagnosticName(FreeSql_SyncStructureAfter)]
         public void SyncStructureAfter([Object] SyncStructureAfterEventArgs eventData)
         {
-            var context = _localSegmentContextAccessor.Context;
+            var context = _tracingContext.CurrentLocal;
             if (context != null)
             {
                 if (!string.IsNullOrEmpty(eventData.Sql))
                     context.Span.AddTag(Common.Tags.DB_STATEMENT, eventData.Sql);
                 if (eventData?.Exception != null)
                     context.Span.ErrorOccurred(eventData.Exception, _tracingConfig);
-                _tracingContext.Release(context);
+                _tracingContext.Finish(context);
             }
         }
         #endregion
@@ -124,14 +122,14 @@ namespace SkyApm.Diagnostics.FreeSql
         [DiagnosticName(FreeSql_CommandAfter)]
         public void CommandAfter([Object] CommandAfterEventArgs eventData)
         {
-            var context = _localSegmentContextAccessor.Context;
+            var context = _tracingContext.CurrentLocal;
             if (context != null)
             {
                 if (!string.IsNullOrEmpty(eventData.Log))
                     context.Span.AddTag(Common.Tags.DB_STATEMENT, eventData.Log);
                 if (eventData?.Exception != null)
                     context.Span.ErrorOccurred(eventData.Exception, _tracingConfig);
-                _tracingContext.Release(context);
+                _tracingContext.Finish(context);
             }
         }
         #endregion
@@ -146,14 +144,14 @@ namespace SkyApm.Diagnostics.FreeSql
         [DiagnosticName(FreeSql_TraceAfter)]
         public void TraceAfterUnitOfWork([Object] TraceAfterEventArgs eventData)
         {
-            var context = _localSegmentContextAccessor.Context;
+            var context = _tracingContext.CurrentLocal;
             if (context != null)
             {
                 if (!string.IsNullOrEmpty(eventData.Remark))
                     context.Span.AddTag(Common.Tags.DB_STATEMENT, eventData.Remark);
                 if (eventData?.Exception != null)
                     context.Span.ErrorOccurred(eventData.Exception, _tracingConfig);
-                _tracingContext.Release(context);
+                _tracingContext.Finish(context);
             }
         }
         #endregion

@@ -61,7 +61,7 @@ namespace SkyApm.Diagnostics.HttpClient.Handlers
                 && _httpClientDiagnosticConfig.StopHeaderPropagationPaths
                     .Any(pattern => FastPathMatcher.Match(pattern, operationName));
 
-            var context = tracingContext.CreateExitSegmentContext(operationName,
+            var context = tracingContext.CreateExit(operationName,
                 $"{request.RequestUri.Host}:{request.RequestUri.Port}",
                 shouldStopPropagation ? null : new HttpClientICarrierHeaderCollection(request));
 

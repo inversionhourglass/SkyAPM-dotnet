@@ -22,13 +22,22 @@ namespace SkyApm.Tracing
 {
     public interface ITracingContext
     {
-        SegmentContext CreateEntrySegmentContext(string operationName, ICarrierHeaderCollection carrierHeader, long startTimeMilliseconds = default);
+        SpanOrSegmentContext CurrentEntry { get; }
 
-        SegmentContext CreateLocalSegmentContext(string operationName, long startTimeMilliseconds = default);
+        SpanOrSegmentContext CurrentLocal { get; }
 
-        SegmentContext CreateExitSegmentContext(string operationName, string networkAddress,
-            ICarrierHeaderCollection carrierHeader = default, long startTimeMilliseconds = default);
+        SpanOrSegmentContext CurrentExit { get; }
 
-        void Release(SegmentContext segmentContext, long endTimeMilliseconds = default);
+        SpanOrSegmentContext CreateEntry(string operationName, ICarrierHeaderCollection carrierHeader, long startTimeMilliseconds = default);
+
+        SpanOrSegmentContext CreateLocal(string operationName, long startTimeMilliseconds = default);
+
+        SpanOrSegmentContext CreateLocal(string operationName, CrossThreadCarrier carrier, long startTimeMilliseconds = default);
+
+        SpanOrSegmentContext CreateExit(string operationName, string networkAddress, ICarrierHeaderCollection carrierHeader = default, long startTimeMilliseconds = default);
+
+        SpanOrSegmentContext CreateExit(string operationName, string networkAddress, CrossThreadCarrier carrier, ICarrierHeaderCollection carrierHeader = default, long startTimeMilliseconds = default);
+
+        void Finish(SpanOrSegmentContext spanOrSegmentContext);
     }
 }

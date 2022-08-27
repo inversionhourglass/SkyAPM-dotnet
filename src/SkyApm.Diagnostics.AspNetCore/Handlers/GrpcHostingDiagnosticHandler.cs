@@ -41,7 +41,7 @@ namespace SkyApm.Diagnostics.AspNetCore.Handlers
 
         public void BeginRequest(ITracingContext tracingContext, HttpContext httpContext)
         {
-            var context = tracingContext.CreateEntrySegmentContext(httpContext.Request.Path,
+            var context = tracingContext.CreateEntry(httpContext.Request.Path,
                 new HttpRequestCarrierHeaderCollection(httpContext.Request));
             context.Span.SpanLayer = SpanLayer.RPC_FRAMEWORK;
             context.Span.Component = Common.Components.GRPC;
@@ -49,7 +49,7 @@ namespace SkyApm.Diagnostics.AspNetCore.Handlers
             context.Span.AddTag(Tags.URL, httpContext.Request.GetDisplayUrl());
         }
 
-        public void EndRequest(SegmentContext segmentContext, HttpContext httpContext)
+        public void EndRequest(SpanOrSegmentContext context, HttpContext httpContext)
         {
             var activity = Activity.Current;
             if (activity.OperationName == ActivityName)
@@ -58,15 +58,15 @@ namespace SkyApm.Diagnostics.AspNetCore.Handlers
                 var method = activity.Tags.FirstOrDefault(x => x.Key == GrpcMethodTagName).Value ??
                              httpContext.Request.Method;
 
-                segmentContext.Span.AddTag(Tags.GRPC_METHOD_NAME, method);
+                context.Span.AddTag(Tags.GRPC_METHOD_NAME, method);
 
                 var statusCode = int.TryParse(statusCodeTag, out var code) ? code : -1;
                 if (statusCode != 0)
                 {
-                    segmentContext.Span.ErrorOccurred();
+                    context.Span.ErrorOccurred();
                 }
 
-                segmentContext.Span.AddTag(Tags.GRPC_STATUS, statusCode);
+                context.Span.AddTag(Tags.GRPC_STATUS, statusCode);
             }
         }
     }

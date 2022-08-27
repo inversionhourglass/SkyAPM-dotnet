@@ -36,21 +36,18 @@ namespace SkyApm.Diagnostics.Grpc.Net.Client
         //private readonly IContextCarrierFactory _contextCarrierFactory;
         private readonly ITracingContext _tracingContext;
 
-        private readonly IExitSegmentContextAccessor _contextAccessor;
         private readonly TracingConfig _tracingConfig;
 
-        public GrpcClientDiagnosticProcessor(ITracingContext tracingContext,
-            IExitSegmentContextAccessor contextAccessor, IConfigAccessor configAccessor)
+        public GrpcClientDiagnosticProcessor(ITracingContext tracingContext, IConfigAccessor configAccessor)
         {
             _tracingContext = tracingContext;
-            _contextAccessor = contextAccessor;
             _tracingConfig = configAccessor.Get<TracingConfig>();
         }
 
         [DiagnosticName(GrpcDiagnostics.ActivityStartKey)]
         public void InitializeCall([Property(Name = "Request")] HttpRequestMessage request)
         {
-            var context = _tracingContext.CreateExitSegmentContext(request.RequestUri.ToString(),
+            var context = _tracingContext.CreateExit(request.RequestUri.ToString(),
                 $"{request.RequestUri.Host}:{request.RequestUri.Port}",
                 new GrpcNetClientICarrierHeaderCollection(request));
 
@@ -71,7 +68,7 @@ namespace SkyApm.Diagnostics.Grpc.Net.Client
         [DiagnosticName(GrpcDiagnostics.ActivityStopKey)]
         public void FinishCall([Property(Name = "Response")] HttpResponseMessage response)
         {
-            var context = _contextAccessor.Context;
+            var context = _tracingContext.CurrentExit;
             if (context == null)
             {
                 return;
@@ -92,7 +89,7 @@ namespace SkyApm.Diagnostics.Grpc.Net.Client
                 context.Span.AddTag(Tags.GRPC_STATUS, statusCode);
             }
 
-            _tracingContext.Release(context);
+            _tracingContext.Finish(context);
         }
     }
 }

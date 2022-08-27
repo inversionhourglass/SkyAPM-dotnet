@@ -36,8 +36,6 @@ namespace SkyApm.Diagnostics.HttpClient
         //private readonly IContextCarrierFactory _contextCarrierFactory;
         private readonly ITracingContext _tracingContext;
 
-        private readonly IExitSegmentContextAccessor _contextAccessor;
-
         private readonly IEnumerable<IRequestDiagnosticHandler> _requestDiagnosticHandlers;
 
         private readonly TracingConfig _tracingConfig;
@@ -45,12 +43,10 @@ namespace SkyApm.Diagnostics.HttpClient
         private readonly HttpClientDiagnosticConfig _httpClientDiagnosticConfig;
 
         public HttpClientTracingDiagnosticProcessor(ITracingContext tracingContext,
-            IExitSegmentContextAccessor contextAccessor,
             IEnumerable<IRequestDiagnosticHandler> requestDiagnosticHandlers,
             IConfigAccessor configAccessor)
         {
             _tracingContext = tracingContext;
-            _contextAccessor = contextAccessor;
             _requestDiagnosticHandlers = requestDiagnosticHandlers.Reverse();
             _tracingConfig = configAccessor.Get<TracingConfig>();
             _httpClientDiagnosticConfig = configAccessor.Get<HttpClientDiagnosticConfig>();
@@ -72,7 +68,7 @@ namespace SkyApm.Diagnostics.HttpClient
         [DiagnosticName("System.Net.Http.Response")]
         public void HttpResponse([Property(Name = "Response")] HttpResponseMessage response)
         {
-            var context = _contextAccessor.Context;
+            var context = _tracingContext.CurrentExit;
             if (context == null)
             {
                 return;
@@ -98,14 +94,14 @@ namespace SkyApm.Diagnostics.HttpClient
                 }
             }
 
-            _tracingContext.Release(context);
+            _tracingContext.Finish(context);
         }
 
         [DiagnosticName("System.Net.Http.Exception")]
         public void HttpException([Property(Name = "Request")] HttpRequestMessage request,
             [Property(Name = "Exception")] Exception exception)
         {
-            _contextAccessor.Context?.Span?.ErrorOccurred(exception, _tracingConfig);
+            _tracingContext.CurrentExit?.Span?.ErrorOccurred(exception, _tracingConfig);
         }
     }
 }

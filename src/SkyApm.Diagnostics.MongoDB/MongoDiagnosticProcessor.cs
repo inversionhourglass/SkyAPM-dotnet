@@ -26,20 +26,17 @@ namespace SkyApm.Diagnostics.MongoDB
     {
         public string ListenerName => "MongoSourceListener";
         private readonly ITracingContext _tracingContext;
-        private readonly IExitSegmentContextAccessor _contextAccessor;
- 
-        public MongoDiagnosticsProcessor(ITracingContext tracingContext,
-            IExitSegmentContextAccessor contextAccessor)
+
+        public MongoDiagnosticsProcessor(ITracingContext tracingContext)
         {
             _tracingContext = tracingContext;
-            _contextAccessor = contextAccessor;
         }
 
         [DiagnosticName("MongoActivity.Start")]
         public void BeforeExecuteCommand([Object] CommandStartedEvent @event)
         {
             var operationName = DiagnosticsActivityEventSubscriber.GetCollectionName(@event);
-            var context = _tracingContext.CreateExitSegmentContext(operationName, @event.ConnectionId.ServerId.EndPoint.ToString());
+            var context = _tracingContext.CreateExit(operationName, @event.ConnectionId.ServerId.EndPoint.ToString());
             context.Span.SpanLayer = Tracing.Segments.SpanLayer.DB;
             context.Span.Component = Common.Components.MongoDBCLIENT;
             context.Span.AddTag("db.system", "mongodb");
@@ -53,25 +50,25 @@ namespace SkyApm.Diagnostics.MongoDB
 
         [DiagnosticName("MongoActivity.Stop")]
         public void AfterExecuteCommand([Object] CommandSucceededEvent @event)
-        { 
-            var context = _contextAccessor.Context;
+        {
+            var context = _tracingContext.CurrentExit;
             context?.Span.AddTag(Common.Tags.STATUS_CODE, "ok");
 
-            _tracingContext.Release(context);
+            _tracingContext.Finish(context);
         }
 
         [DiagnosticName("MongoActivity.Failed")]
         public void FailedExecuteCommand([Object] CommandFailedEvent @event)
         {
-            var context = _contextAccessor.Context;
+            var context = _tracingContext.CurrentExit;
             context?.Span.AddTag("status_description", @event.Failure.Message);
             context?.Span.AddTag("error.type", @event.Failure.GetType().FullName);
             context?.Span.AddTag("error.msg", @event.Failure.Message);
             context?.Span.AddTag("error.stack", @event.Failure.StackTrace);
             context?.Span.AddTag(Common.Tags.STATUS_CODE, "error");
 
-            _tracingContext.Release(context);
+            _tracingContext.Finish(context);
         }
-         
+
     }
 }

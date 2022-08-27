@@ -29,14 +29,11 @@ namespace SkyApm.Diagnostics.Grpc.Client
     public class ClientDiagnosticProcessor
     {
         private readonly ITracingContext _tracingContext;
-        private readonly IExitSegmentContextAccessor _segmentContextAccessor;
         private readonly TracingConfig _tracingConfig;
 
-        public ClientDiagnosticProcessor(IExitSegmentContextAccessor segmentContextAccessor,
-            ITracingContext tracingContext, IConfigAccessor configAccessor)
+        public ClientDiagnosticProcessor(ITracingContext tracingContext, IConfigAccessor configAccessor)
         {
             _tracingContext = tracingContext;
-            _segmentContextAccessor = segmentContextAccessor;
             _tracingConfig = configAccessor.Get<TracingConfig>();
         }
 
@@ -48,7 +45,7 @@ namespace SkyApm.Diagnostics.Grpc.Client
             // 但context.Span.Peer为null的时候无法形成一条完整的链路，故设置了默认值[::1]
             var host = grpcContext.Host ?? "[::1]";
             var carrierHeader = new GrpcCarrierHeaderCollection(grpcContext.Options.Headers);
-            var context = _tracingContext.CreateExitSegmentContext($"{host}{grpcContext.Method.FullName}", host, carrierHeader);
+            var context = _tracingContext.CreateExit($"{host}{grpcContext.Method.FullName}", host, carrierHeader);
             context.Span.SpanLayer = SpanLayer.RPC_FRAMEWORK;
             context.Span.Component = Components.GRPC;
             context.Span.Peer = new StringOrIntValue(host);
@@ -67,7 +64,7 @@ namespace SkyApm.Diagnostics.Grpc.Client
 
         public void EndRequest()
         {
-            var context = _segmentContextAccessor.Context;
+            var context = _tracingContext.CurrentExit;
             if (context == null)
             {
                 return;
@@ -77,16 +74,16 @@ namespace SkyApm.Diagnostics.Grpc.Client
                 LogEvent.Event("Grpc Client EndRequest"),
                 LogEvent.Message($"Request finished "));
 
-            _tracingContext.Release(context);
+            _tracingContext.Finish(context);
         }
 
         public void DiagnosticUnhandledException(Exception exception)
         {
-            var context = _segmentContextAccessor.Context;
+            var context = _tracingContext.CurrentExit;
             if (context != null)
             {
                 context.Span?.ErrorOccurred(exception, _tracingConfig);
-                _tracingContext.Release(context);
+                _tracingContext.Finish(context);
             }
         }
     }
