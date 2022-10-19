@@ -22,7 +22,7 @@ using SkyApm.Tracing.Segments;
 
 namespace SkyApm.Transport
 {
-    public interface ISegmentDispatcher
+    public partial interface ISegmentDispatcher
     {
         bool Dispatch(SegmentContext segmentContext);
 

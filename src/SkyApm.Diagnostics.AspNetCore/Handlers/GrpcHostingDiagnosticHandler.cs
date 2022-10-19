@@ -49,7 +49,7 @@ namespace SkyApm.Diagnostics.AspNetCore.Handlers
             context.Span.AddTag(Tags.URL, httpContext.Request.GetDisplayUrl());
         }
 
-        public void EndRequest(SpanOrSegmentContext context, HttpContext httpContext)
+        public void EndRequest(SpanOrSegmentContext segmentContext, HttpContext httpContext)
         {
             var activity = Activity.Current;
             if (activity.OperationName == ActivityName)
@@ -58,15 +58,15 @@ namespace SkyApm.Diagnostics.AspNetCore.Handlers
                 var method = activity.Tags.FirstOrDefault(x => x.Key == GrpcMethodTagName).Value ??
                              httpContext.Request.Method;
 
-                context.Span.AddTag(Tags.GRPC_METHOD_NAME, method);
+                segmentContext.Span.AddTag(Tags.GRPC_METHOD_NAME, method);
 
                 var statusCode = int.TryParse(statusCodeTag, out var code) ? code : -1;
                 if (statusCode != 0)
                 {
-                    context.Span.ErrorOccurred();
+                    segmentContext.Span.ErrorOccurred();
                 }
 
-                context.Span.AddTag(Tags.GRPC_STATUS, statusCode);
+                segmentContext.Span.AddTag(Tags.GRPC_STATUS, statusCode);
             }
         }
     }

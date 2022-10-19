@@ -28,6 +28,6 @@ namespace SkyApm.Diagnostics.AspNetCore.Handlers
 
         void BeginRequest(ITracingContext tracingContext, HttpContext httpContext);
 
-        void EndRequest(SpanOrSegmentContext context, HttpContext httpContext);
+        void EndRequest(SpanOrSegmentContext segmentContext, HttpContext httpContext);
     }
 }

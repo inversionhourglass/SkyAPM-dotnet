@@ -84,15 +84,15 @@ namespace SkyApm.Diagnostics.AspNetCore.Handlers
             }
         }
 
-        public void EndRequest(SpanOrSegmentContext context, HttpContext httpContext)
+        public void EndRequest(SpanOrSegmentContext segmentContext, HttpContext httpContext)
         {
             var statusCode = httpContext.Response.StatusCode;
             if (statusCode >= 400)
             {
-                context.Span.ErrorOccurred();
+                segmentContext.Span.ErrorOccurred();
             }
 
-            context.Span.AddTag(Tags.STATUS_CODE, statusCode);
+            segmentContext.Span.AddTag(Tags.STATUS_CODE, statusCode);
         }
 
         private string CollectCookies(HttpContext httpContext, IEnumerable<string> keys)

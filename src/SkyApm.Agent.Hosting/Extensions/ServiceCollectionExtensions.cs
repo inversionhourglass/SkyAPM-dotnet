@@ -84,6 +84,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
         private static IServiceCollection AddTracing(this IServiceCollection services)
         {
+            services.AddSingleton<ITraceSegmentMapper, TraceSegmentMapper>();
+
             services.AddSingleton<ITracingContext, TracingContext>();
             services.AddSingleton<ICarrierPropagator, CarrierPropagator>();
             services.AddSingleton<ICarrierFormatter, Sw8CarrierFormatter>();

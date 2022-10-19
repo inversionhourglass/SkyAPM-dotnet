@@ -24,7 +24,7 @@ using SkyApm.Tracing.Segments;
 
 namespace SkyApm.Tracing
 {
-    public class SegmentContextFactory : ISegmentContextFactory
+    public partial class SegmentContextFactory : ISegmentContextFactory
     {
         private readonly IEntrySegmentContextAccessor _entrySegmentContextAccessor;
         private readonly ILocalSegmentContextAccessor _localSegmentContextAccessor;
@@ -50,11 +50,6 @@ namespace SkyApm.Tracing
             _exitSegmentContextAccessor = exitSegmentContextAccessor;
             _instrumentConfig = configAccessor.Get<InstrumentConfig>();
         }
-        public SegmentContext CurrentEntryContext => _entrySegmentContextAccessor.Context;
-
-        public SegmentContext CurrentLocalContext => _localSegmentContextAccessor.Context;
-
-        public SegmentContext CurrentExitContext => _exitSegmentContextAccessor.Context;
 
         public SegmentContext CreateEntrySegment(string operationName, ICarrier carrier, long startTimeMilliseconds = default)
         {
@@ -123,24 +118,6 @@ namespace SkyApm.Tracing
             return segmentContext;
         }
 
-        public SegmentContext CreateLocalSegment(string operationName, CrossThreadCarrier carrier, long startTimeMilliseconds = default)
-        {
-            if (carrier == null) return CreateLocalSegment(operationName, startTimeMilliseconds);
-
-            var traceId = GetTraceId(carrier);
-            var segmentId = GetSegmentId();
-            var sampled = GetSampled(carrier, operationName);
-            var segmentContext = new SegmentContext(traceId, segmentId, sampled,
-                _instrumentConfig.ServiceName ?? _instrumentConfig.ApplicationCode,
-                _instrumentConfig.ServiceInstanceName,
-                operationName, SpanType.Local, startTimeMilliseconds);
-
-            segmentContext.References.Add(carrier);
-
-            _localSegmentContextAccessor.Context = segmentContext;
-            return segmentContext;
-        }
-
         public SegmentContext CreateExitSegment(string operationName, StringOrIntValue networkAddress, long startTimeMilliseconds = default)
         {
             var parentSegmentContext = GetParentSegmentContext(SpanType.Exit);
@@ -171,25 +148,6 @@ namespace SkyApm.Tracing
                 };
                 segmentContext.References.Add(reference);
             }
-
-            segmentContext.Span.Peer = networkAddress;
-            _exitSegmentContextAccessor.Context = segmentContext;
-            return segmentContext;
-        }
-
-        public SegmentContext CreateExitSegment(string operationName, StringOrIntValue networkAddress, CrossThreadCarrier carrier, long startTimeMilliseconds = default)
-        {
-            if (carrier == null) CreateExitSegment(operationName, networkAddress, startTimeMilliseconds);
-
-            var traceId = GetTraceId(carrier);
-            var segmentId = GetSegmentId();
-            var sampled = GetSampled(carrier, operationName);
-            var segmentContext = new SegmentContext(traceId, segmentId, sampled,
-                _instrumentConfig.ServiceName ?? _instrumentConfig.ApplicationCode,
-                _instrumentConfig.ServiceInstanceName,
-                operationName, SpanType.Exit, startTimeMilliseconds);
-
-            segmentContext.References.Add(carrier);
 
             segmentContext.Span.Peer = networkAddress;
             _exitSegmentContextAccessor.Context = segmentContext;

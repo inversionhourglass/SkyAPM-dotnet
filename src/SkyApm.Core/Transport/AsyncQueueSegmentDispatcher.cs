@@ -26,7 +26,7 @@ using SkyApm.Tracing.Segments;
 
 namespace SkyApm.Transport
 {
-    public class AsyncQueueSegmentDispatcher : ISegmentDispatcher
+    public partial class AsyncQueueSegmentDispatcher : ISegmentDispatcher
     {
         private readonly ILogger _logger;
         private readonly TransportConfig _config;
@@ -38,6 +38,7 @@ namespace SkyApm.Transport
         private int _offset;
 
         public AsyncQueueSegmentDispatcher(IConfigAccessor configAccessor,
+            Tracing.IAsyncSpanCombiner asasyncSpanCombiner, ITraceSegmentMapper traceSegmentMapper,
             ISegmentReporter segmentReporter, IRuntimeEnvironment runtimeEnvironment,
             ISegmentContextMapper segmentContextMapper, ILoggerFactory loggerFactory)
         {
@@ -48,6 +49,13 @@ namespace SkyApm.Transport
             _config = configAccessor.Get<TransportConfig>();
             _segmentQueue = new ConcurrentQueue<SegmentRequest>();
             _cancellation = new CancellationTokenSource();
+
+            _asyncSpanCombiner = asasyncSpanCombiner;
+            _traceSegmentMapper = traceSegmentMapper;
+            _spanConfig = configAccessor.Get<SpanStructureConfig>();
+            _mergeQueue = new ConcurrentQueue<TraceSegment>();
+            _mergeDictionary = new ConcurrentDictionary<string, ConcurrentDictionary<string, TraceSegment>>();
+            _mergeTask = Task.Factory.StartNew(() => _mergeTask = BackgroundMerge(), _cancellation.Token, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         }
 
         public bool Dispatch(SegmentContext segmentContext)

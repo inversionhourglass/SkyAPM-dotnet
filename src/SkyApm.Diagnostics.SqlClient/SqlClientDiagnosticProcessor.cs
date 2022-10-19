@@ -29,7 +29,8 @@ namespace SkyApm.Diagnostics.SqlClient
         private readonly ITracingContext _tracingContext;
         private readonly TracingConfig _tracingConfig;
 
-        public SqlClientTracingDiagnosticProcessor(ITracingContext tracingContext, IConfigAccessor configAccessor)
+        public SqlClientTracingDiagnosticProcessor(ITracingContext tracingContext,
+            IConfigAccessor configAccessor)
         {
             _tracingContext = tracingContext;
             _tracingConfig = configAccessor.Get<TracingConfig>();

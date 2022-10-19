@@ -38,7 +38,8 @@ namespace SkyApm.Diagnostics.Grpc.Net.Client
 
         private readonly TracingConfig _tracingConfig;
 
-        public GrpcClientDiagnosticProcessor(ITracingContext tracingContext, IConfigAccessor configAccessor)
+        public GrpcClientDiagnosticProcessor(ITracingContext tracingContext,
+            IConfigAccessor configAccessor)
         {
             _tracingContext = tracingContext;
             _tracingConfig = configAccessor.Get<TracingConfig>();

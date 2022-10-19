@@ -36,7 +36,8 @@ namespace SkyApm.Diagnostics.SmartSql
         private readonly ITracingContext _tracingContext;
         private readonly TracingConfig _tracingConfig;
 
-        public SmartSqlTracingDiagnosticProcessor(ITracingContext tracingContext, IConfigAccessor configAccessor)
+        public SmartSqlTracingDiagnosticProcessor(ITracingContext tracingContext,
+            IConfigAccessor configAccessor)
         {
             _tracingContext = tracingContext;
             _tracingConfig = configAccessor.Get<TracingConfig>();

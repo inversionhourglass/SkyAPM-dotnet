@@ -21,7 +21,7 @@ using System;
 namespace SkyApm.Config
 {
     [Config("SkyWalking")]
-    public class InstrumentConfig
+    public partial class InstrumentConfig
     {
         public string Namespace { get; set; }
 

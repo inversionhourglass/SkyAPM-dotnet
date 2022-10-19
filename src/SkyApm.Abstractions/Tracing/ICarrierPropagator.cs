@@ -20,7 +20,7 @@ using SkyApm.Tracing.Segments;
 
 namespace SkyApm.Tracing
 {
-    public interface ICarrierPropagator
+    public partial interface ICarrierPropagator
     {
         void Inject(SegmentContext segmentContext, ICarrierHeaderCollection carrier);
 

@@ -21,23 +21,13 @@ using SkyApm.Tracing.Segments;
 
 namespace SkyApm.Tracing
 {
-    public interface ISegmentContextFactory
+    public partial interface ISegmentContextFactory
     {
-        SegmentContext CurrentEntryContext { get; }
-
-        SegmentContext CurrentLocalContext { get; }
-
-        SegmentContext CurrentExitContext { get; }
-
         SegmentContext CreateEntrySegment(string operationName, ICarrier carrier, long startTimeMilliseconds = default);
 
         SegmentContext CreateLocalSegment(string operationName, long startTimeMilliseconds = default);
 
-        SegmentContext CreateLocalSegment(string operationName, CrossThreadCarrier carrier, long startTimeMilliseconds = default);
-
         SegmentContext CreateExitSegment(string operationName, StringOrIntValue networkAddress, long startTimeMilliseconds = default);
-
-        SegmentContext CreateExitSegment(string operationName, StringOrIntValue networkAddress, CrossThreadCarrier carrier, long startTimeMilliseconds = default);
 
         void Release(SegmentContext segmentContext, long endTimeMilliseconds = default);
     }

@@ -24,21 +24,21 @@ using SkyApm.Common;
 
 namespace SkyApm.Tracing.Segments
 {
-    public class SegmentSpan
+    public partial class SegmentSpan
     {
-        public int SpanId { get; } = 0;
+        public int SpanId { get; set; } = 0;
 
-        public int ParentSpanId { get; } = -1;
+        public int ParentSpanId => Parent == null ? -1 : Parent.SpanId;
 
-        public long StartTime { get; }
+        public long StartTime { get; set; }
 
-        public long EndTime { get; private set; }
+        public long EndTime { get; set; }
 
-        public StringOrIntValue OperationName { get; }
+        public StringOrIntValue OperationName { get; set; }
 
         public StringOrIntValue Peer { get; set; }
 
-        public SpanType SpanType { get; }
+        public SpanType SpanType { get; set; }
 
         public SpanLayer SpanLayer { get; set; }
 

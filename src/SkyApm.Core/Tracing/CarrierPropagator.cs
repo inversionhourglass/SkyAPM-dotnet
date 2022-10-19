@@ -22,7 +22,7 @@ using SkyApm.Tracing.Segments;
 
 namespace SkyApm.Tracing
 {
-    public class CarrierPropagator : ICarrierPropagator
+    public partial class CarrierPropagator : ICarrierPropagator
     {
         private readonly IEnumerable<ICarrierFormatter> _carrierFormatters;
         private readonly ISegmentContextFactory _segmentContextFactory;
