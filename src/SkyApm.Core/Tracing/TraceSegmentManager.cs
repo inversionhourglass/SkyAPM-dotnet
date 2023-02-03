@@ -191,7 +191,7 @@ namespace SkyApm.Tracing
             var traceId = GetTraceId(carrier);
             var segmentId = GetSegmentId();
             var sampled = GetSampled(carrier, operationName);
-            var traceSegment = new WideTraceSegment(_uniqueIdGenerator, traceId, segmentId, sampled,
+            var traceSegment = new WideTraceSegment(traceId, segmentId, sampled,
                 _instrumentConfig.ServiceName ?? _instrumentConfig.ApplicationCode,
                 _instrumentConfig.ServiceInstanceName);
 

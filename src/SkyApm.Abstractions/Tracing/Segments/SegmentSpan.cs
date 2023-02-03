@@ -30,15 +30,15 @@ namespace SkyApm.Tracing.Segments
 
         public int ParentSpanId => Parent == null ? -1 : Parent.SpanId;
 
-        public long StartTime { get; set; }
+        public long StartTime { get; }
 
-        public long EndTime { get; set; }
+        public long EndTime { get; private set; }
 
-        public StringOrIntValue OperationName { get; set; }
+        public StringOrIntValue OperationName { get; }
 
         public StringOrIntValue Peer { get; set; }
 
-        public SpanType SpanType { get; set; }
+        public SpanType SpanType { get; }
 
         public SpanLayer SpanLayer { get; set; }
 

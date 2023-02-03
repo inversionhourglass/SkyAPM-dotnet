@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using SkyApm.Tracing.Segments;
 
@@ -6,16 +7,6 @@ namespace SkyApm.Transport
     public class TraceSegmentMapper : ITraceSegmentMapper
     {
         public SegmentRequest Map(TraceSegment traceSegment)
-        {
-            return Map(traceSegment, false);
-        }
-
-        public SegmentRequest MapIfNoAsync(TraceSegment traceSegment)
-        {
-            return Map(traceSegment, true);
-        }
-
-        private SegmentRequest Map(TraceSegment traceSegment, bool nullIfAsync)
         {
             var segmentRequest = new SegmentRequest
             {
@@ -30,23 +21,11 @@ namespace SkyApm.Transport
             segmentRequest.Segment = segmentObjectRequest;
             foreach (var span in traceSegment.Spans)
             {
-                string operationName;
-                if (span.AsyncDepth < 0)
-                {
-                    operationName = span.OperationName.ToString();
-                }
-                else
-                {
-                    if (nullIfAsync) return null;
-                    operationName = $"[async-{span.AsyncDepth}]{span.OperationName}";
-                }
-                var spanId = span == traceSegment.FirstSpan ? 0 : span.SpanId;
-                var parentSpanId = span.ParentSpanId == traceSegment.FirstSpan.SpanId ? 0 : span.ParentSpanId;
                 var spanRequest = new SpanRequest
                 {
-                    SpanId = spanId,
-                    ParentSpanId = parentSpanId,
-                    OperationName = operationName,
+                    SpanId = span.SpanId,
+                    ParentSpanId = span.ParentSpanId,
+                    OperationName = span.OperationName,
                     StartTime = span.StartTime,
                     EndTime = span.EndTime,
                     SpanType = (int)span.SpanType,
@@ -55,10 +34,6 @@ namespace SkyApm.Transport
                     Peer = span.Peer,
                     Component = span.Component
                 };
-                if (span == traceSegment.FirstSpan)
-                {
-                    spanRequest.ParentSpanId = -1;
-                }
                 foreach (var reference in span.References)
                     spanRequest.References.Add(new SegmentReferenceRequest
                     {
@@ -76,6 +51,12 @@ namespace SkyApm.Transport
 
                 foreach (var tag in span.Tags)
                     spanRequest.Tags.Add(new KeyValuePair<string, string>(tag.Key, tag.Value));
+
+                if (span.EndTime == default)
+                {
+                    span.Finish();
+                    spanRequest.Tags.Add(new KeyValuePair<string, string>(SegmentSpan.TAG_INCOMPLETE, "true"));
+                }
 
                 foreach (var log in span.Logs)
                 {

@@ -1,24 +1,18 @@
-﻿using SkyApm.Config;
+﻿using SkyApm.Common;
+using SkyApm.Config;
 using SkyApm.Tracing;
 using SkyApm.Tracing.Segments;
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace SkyApm.Transport
 {
     partial class AsyncQueueSegmentDispatcher
     {
         private readonly SpanStructureConfig _spanConfig;
-        private readonly IAsyncSpanCombiner _asyncSpanCombiner;
         private readonly ITraceSegmentMapper _traceSegmentMapper;
-        private readonly ConcurrentQueue<TraceSegment> _mergeQueue;
-        private readonly ConcurrentDictionary<string, ConcurrentDictionary<string, TraceSegment>> _mergeDictionary;
-        private Task _mergeTask;
-        private int _mergeCount;
+
+        private readonly ConcurrentPriorityQueue<TimeSequencedSegment> _segments = new ConcurrentPriorityQueue<TimeSequencedSegment>();
 
         public bool Dispatch(TraceSegment traceSegment)
         {
@@ -26,117 +20,51 @@ namespace SkyApm.Transport
                 return false;
 
             // todo performance optimization for ConcurrentQueue
-            if (_config.QueueSize < _offset || _cancellation.IsCancellationRequested)
+            if (_cancellation.IsCancellationRequested)
                 return false;
 
-            var segment = _traceSegmentMapper.MapIfNoAsync(traceSegment);
-
-            if (segment == null)
+            if (traceSegment is WideTraceSegment segment)
             {
-                var mergeEnqueue = Merge(traceSegment);
-                if (mergeEnqueue) return true;
-
-                segment = _traceSegmentMapper.Map(traceSegment);
+                if (segment.IncompleteSpans > 0 && _spanConfig.DelaySeconds > 0)
+                {
+                    var sequencedSegment = new TimeSequencedSegment(segment, _spanConfig.DelaySeconds);
+                    _segments.Enqueue(sequencedSegment);
+                    return true;
+                }
+                traceSegment = segment.ToTraceSegment();
             }
 
-            Enqueue(segment);
+            Enqueue(traceSegment);
 
             return true;
         }
 
-        private bool Merge(TraceSegment segment)
+        public void DelayInspect(CancellationToken token)
         {
-            var count = Interlocked.Increment(ref _mergeCount);
-            if (_cancellation.IsCancellationRequested || count >= _spanConfig.MergeQueueSize ||
-                segment.FirstSpan.EndTime + _spanConfig.MergeDelay <= DateTimeOffset.UtcNow.ToUnixTimeMilliseconds())
+            while (_segments.TryPeek(out var segmentItem) && segmentItem.Deadline <= DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
+                && !token.IsCancellationRequested)
             {
-                Interlocked.Decrement(ref _mergeCount);
-                return false;
-            }
-            var segmentDictionary = _mergeDictionary.GetOrAdd(segment.TraceId, traceId =>
-            {
-                var dictionary = new ConcurrentDictionary<string, TraceSegment>();
-                dictionary.TryAdd(segment.SegmentId, segment);
-                return dictionary;
-            });
-            if (segmentDictionary.ContainsKey(segment.SegmentId))
-            {
-                _mergeQueue.Enqueue(segment);
-            }
-            else
-            {
-                segmentDictionary.TryAdd(segment.SegmentId, segment);
-            }
-            return true;
-        }
+                _segments.TryDequeue(out _);
+                var segment = segmentItem.Segment;
+                if (segment == null) continue;
 
-        private async Task BackgroundMerge()
-        {
-            while (!_cancellation.IsCancellationRequested)
-            {
-                if (!_mergeQueue.TryDequeue(out var segment))
-                {
-                    try
-                    {
-                        await Task.Delay(_spanConfig.MergeDelay, _cancellation.Token);
-                        continue;
-                    }
-                    catch (TaskCanceledException)
-                    {
-                        break;
-                    }
-                }
+                var traceSegment = segment.ToTraceSegment();
 
-                var deadline = segment.FirstSpan.EndTime + _spanConfig.MergeDelay;
-                var current = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-                var delay = (int)(deadline - current);
-                if (delay > 100)
-                {
-                    try
-                    {
-                        await Task.Delay(delay, _cancellation.Token);
-                    }
-                    catch (TaskCanceledException)
-                    {
-                        _mergeQueue.Enqueue(segment);
-                        break;
-                    }
-                }
-
-                if (!_mergeDictionary.TryRemove(segment.TraceId, out var segments)) continue;
-
-                MergeAndEnqueue(segments.Values);
-            }
-
-            foreach (var traceId in _mergeDictionary.Keys.ToArray())
-            {
-                if (_mergeDictionary.TryRemove(traceId, out var segments))
-                {
-                    MergeAndEnqueue(segments.Values);
-                }
+                Enqueue(traceSegment);
             }
         }
 
-        private void MergeAndEnqueue(IEnumerable<TraceSegment> segments)
+        private void Enqueue(TraceSegment traceSegment)
         {
-            var mergedSegments = _asyncSpanCombiner.Merge(segments);
-            foreach (var mergedSegment in mergedSegments)
-            {
-                if (mergedSegment == null) continue;
+            if (_config.QueueSize < _offset) return;
 
-                var segmentRequest = _traceSegmentMapper.Map(mergedSegment);
+            var segmentRequest = _traceSegmentMapper.Map(traceSegment);
 
-                Enqueue(segmentRequest);
-            }
-        }
-
-        private void Enqueue(SegmentRequest segment)
-        {
-            _segmentQueue.Enqueue(segment);
+            _segmentQueue.Enqueue(segmentRequest);
 
             Interlocked.Increment(ref _offset);
 
-            _logger.Debug($"Dispatch trace segment. [SegmentId]={segment.Segment.SegmentId}.");
+            _logger.Debug($"Dispatch trace segment. [SegmentId]={segmentRequest.Segment.SegmentId}.");
         }
     }
 }

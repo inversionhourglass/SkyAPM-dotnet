@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SkyApm.Tracing.Segments
+﻿namespace SkyApm.Tracing.Segments
 {
     partial class SegmentSpan
     {
+        public const string TAG_INCOMPLETE = "incomplete";
+
         private TraceSegment _segment;
-
-        public int AsyncDepth { get; set; } = -1;
-
-        public string SpanPath => Parent == null ? SpanId.ToString() : $"{Parent.SpanPath},{SpanId}";
 
         /// <summary>
         /// Should only be set by first span of segment
@@ -28,8 +21,6 @@ namespace SkyApm.Tracing.Segments
         /// A lot of logic uses Parent, think carefully before changing this value
         /// </summary>
         public SegmentSpan Parent { get; set; }
-
-        public ConcurrentDictionary<int, SegmentSpan> Children { get; } = new ConcurrentDictionary<int, SegmentSpan>();
 
         public void AddLog(SpanLog log)
         {
