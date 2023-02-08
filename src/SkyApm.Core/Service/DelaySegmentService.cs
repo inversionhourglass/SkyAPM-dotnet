@@ -9,7 +9,7 @@ namespace SkyApm.Service
 {
     public class DelaySegmentService : ExecutionService
     {
-        private readonly SpanStructureConfig _config;
+        private readonly SpanableConfig _config;
         private readonly ISegmentDispatcher _dispatcher;
 
         public DelaySegmentService(IConfigAccessor configAccessor, ISegmentDispatcher dispatcher,
@@ -17,7 +17,7 @@ namespace SkyApm.Service
             : base(runtimeEnvironment, loggerFactory)
         {
             _dispatcher = dispatcher;
-            _config = configAccessor.Get<SpanStructureConfig>();
+            _config = configAccessor.Get<SpanableConfig>();
             Period = TimeSpan.FromMilliseconds(_config.DelayInspectInterval);
         }
 

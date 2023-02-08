@@ -9,9 +9,9 @@ namespace SkyApm.Tracing
     internal class WideTraceSegment : TraceSegment
     {
         private readonly AsyncLocal<int?> _spanTree = new AsyncLocal<int?>();
+        private readonly ConcurrentDictionary<int, object> _incompleteSpans = new ConcurrentDictionary<int, object>();
         private readonly ConcurrentDictionary<int, SegmentSpan> _spans = new ConcurrentDictionary<int, SegmentSpan>();
         private volatile int _spanId = -1;
-        private volatile int _incompleteSpans;
         private volatile int _completed;
 
         public WideTraceSegment(string traceId, string segmentId, bool sampled, string serviceId, string serviceInstanceId)
@@ -30,7 +30,7 @@ namespace SkyApm.Tracing
             }
         }
 
-        public int IncompleteSpans => _incompleteSpans;
+        public int IncompleteSpans => _incompleteSpans.Count;
 
         public long FinishTimestamp { get; private set; }
 
@@ -76,7 +76,6 @@ namespace SkyApm.Tracing
                 if (!_spans.TryGetValue(parentSpanId, out parentSpan)) return null;
             }
 
-            Interlocked.Increment(ref _incompleteSpans);
             var span = new SegmentSpan(operationName, spanType, startTimeMilliseconds)
             {
                 SpanId = spanId
@@ -86,6 +85,7 @@ namespace SkyApm.Tracing
                 span.Parent = parentSpan;
             }
             _spans.TryAdd(spanId, span);
+            _incompleteSpans.TryAdd(spanId, null);
             _spanTree.Value = spanId;
             if (spanId == 0) FirstSpan = span;
 
@@ -95,13 +95,13 @@ namespace SkyApm.Tracing
         public WideTraceSegment Finish(SegmentSpan span, long endTimeMilliseconds = default)
         {
             if (!_spans.TryGetValue(span.SpanId, out var storedSpan) || span != storedSpan) return null;
-            if (!_spans.TryRemove(span.SpanId, out _)) return null;
+            if (!_incompleteSpans.TryRemove(span.SpanId, out _)) return null;
 
             _spanTree.Value = span.Parent?.SpanId;
             span.Finish(endTimeMilliseconds);
-            Interlocked.Decrement(ref _incompleteSpans);
 
-            if (span.Parent == null || _completed == 1 && !_spans.TryGetValue(span.ParentSpanId, out _))
+            if (span.Parent == null || // root span finished
+                IncompleteSpans == 0 && _completed == 0) // all async spans finished
             {
                 FinishTimestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
                 return this;
@@ -111,9 +111,14 @@ namespace SkyApm.Tracing
 
         public TraceSegment ToTraceSegment()
         {
-            Interlocked.Exchange(ref _completed, 1);
+            if (Interlocked.Exchange(ref _completed, 1) == 1) return null;
+
             var segment = new TraceSegment(TraceId, SegmentId, Sampled, ServiceId, ServiceInstanceId);
-            segment.Spans.AddRange(_spans.Values);
+            foreach (var span in _spans.Values)
+            {
+                span.InCompleteFinish();
+                segment.Spans.Add(span);
+            }
             return segment;
         }
 

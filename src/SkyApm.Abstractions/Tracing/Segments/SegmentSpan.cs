@@ -82,11 +82,15 @@ namespace SkyApm.Tracing.Segments
 
         public void Finish(long endTimeMilliseconds = default)
         {
-            EndTime = endTimeMilliseconds == default ? DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() : endTimeMilliseconds;
+            lock (_finishLocker)
+            {
+                EndTime = endTimeMilliseconds == default ? DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() : endTimeMilliseconds;
+                Tags.RemoveTag(TAG_INCOMPLETE);
+            }
         }
     }
 
-    public class TagCollection : IEnumerable<KeyValuePair<string, string>>
+    public partial class TagCollection : IEnumerable<KeyValuePair<string, string>>
     {
         private readonly Dictionary<string, string> tags = new Dictionary<string, string>();
 

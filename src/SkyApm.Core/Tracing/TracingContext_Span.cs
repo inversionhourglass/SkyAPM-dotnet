@@ -10,7 +10,7 @@ namespace SkyApm.Tracing
     partial class TracingContext
     {
         private readonly ITraceSegmentManager _traceSegmentManager;
-        private readonly bool _isSpanStructure;
+        private readonly bool _spanable;
         private readonly ILogger _logger;
 
         public TracingContext(ISegmentContextFactory segmentContextFactory,
@@ -25,48 +25,48 @@ namespace SkyApm.Tracing
             _carrierPropagator = carrierPropagator;
             _segmentDispatcher = segmentDispatcher;
             _logger = loggerFactory.CreateLogger(typeof(TracingContext));
-            _isSpanStructure = configAccessor.Get<InstrumentConfig>().IsSpanStructure();
+            _spanable = configAccessor.Get<InstrumentConfig>().Spanable();
         }
 
         private SegmentSpan ActiveSpan => _traceSegmentManager.ActiveSpan;
 
-        public SpanOrSegmentContext CurrentEntry => _isSpanStructure ? (SpanOrSegmentContext)ActiveSpan : _segmentContextFactory.CurrentEntryContext;
+        public SpanOrSegmentContext CurrentEntry => _spanable ? (SpanOrSegmentContext)ActiveSpan : _segmentContextFactory.CurrentEntryContext;
 
-        public SpanOrSegmentContext CurrentLocal => _isSpanStructure ? (SpanOrSegmentContext)ActiveSpan : _segmentContextFactory.CurrentLocalContext;
+        public SpanOrSegmentContext CurrentLocal => _spanable ? (SpanOrSegmentContext)ActiveSpan : _segmentContextFactory.CurrentLocalContext;
 
-        public SpanOrSegmentContext CurrentExit => _isSpanStructure ? (SpanOrSegmentContext)ActiveSpan : _segmentContextFactory.CurrentExitContext;
+        public SpanOrSegmentContext CurrentExit => _spanable ? (SpanOrSegmentContext)ActiveSpan : _segmentContextFactory.CurrentExitContext;
 
         public SpanOrSegmentContext CreateEntry(string operationName, ICarrierHeaderCollection carrierHeader, long startTimeMilliseconds = default)
         {
-            return _isSpanStructure ?
+            return _spanable ?
                 (SpanOrSegmentContext)CreateEntrySpan(operationName, carrierHeader, startTimeMilliseconds) :
                 CreateEntrySegmentContext(operationName, carrierHeader, startTimeMilliseconds);
         }
 
         public SpanOrSegmentContext CreateLocal(string operationName, long startTimeMilliseconds = default)
         {
-            return _isSpanStructure ?
+            return _spanable ?
                 (SpanOrSegmentContext)CreateLocalSpan(operationName, startTimeMilliseconds) :
                 CreateLocalSegmentContext(operationName, startTimeMilliseconds);
         }
 
         public SpanOrSegmentContext CreateLocal(string operationName, CrossThreadCarrier carrier, long startTimeMilliseconds = default)
         {
-            return _isSpanStructure ?
+            return _spanable ?
                 (SpanOrSegmentContext)CreateLocalSpan(operationName, carrier, startTimeMilliseconds) :
                 CreateLocalSegmentContext(operationName, carrier, startTimeMilliseconds);
         }
 
         public SpanOrSegmentContext CreateExit(string operationName, string networkAddress, ICarrierHeaderCollection carrierHeader = default, long startTimeMilliseconds = default)
         {
-            return _isSpanStructure ?
+            return _spanable ?
                 (SpanOrSegmentContext)CreateExitSpan(operationName, networkAddress, carrierHeader, startTimeMilliseconds) :
                 CreateExitSegmentContext(operationName, networkAddress, carrierHeader, startTimeMilliseconds);
         }
 
         public SpanOrSegmentContext CreateExit(string operationName, string networkAddress, CrossThreadCarrier carrier, ICarrierHeaderCollection carrierHeader = default, long startTimeMilliseconds = default)
         {
-            return _isSpanStructure ?
+            return _spanable ?
                 (SpanOrSegmentContext)CreateExitSpan(operationName, networkAddress, carrier, carrierHeader, startTimeMilliseconds) :
                 CreateExitSegmentContext(operationName, networkAddress, carrier, carrierHeader, startTimeMilliseconds);
         }
@@ -75,7 +75,7 @@ namespace SkyApm.Tracing
         {
             if (CheckStructure(spanOrSegmentContext))
             {
-                if (_isSpanStructure)
+                if (_spanable)
                 {
                     StopSpan(spanOrSegmentContext.SegmentSpan);
                 }
@@ -88,7 +88,7 @@ namespace SkyApm.Tracing
 
         private bool CheckStructure(SpanOrSegmentContext spanOrSegmentContext)
         {
-            if (_isSpanStructure)
+            if (_spanable)
             {
                 if (spanOrSegmentContext.SegmentSpan != null) return true;
 

@@ -1,11 +1,18 @@
-using System;
 using System.Collections.Generic;
+using SkyApm.Config;
 using SkyApm.Tracing.Segments;
 
 namespace SkyApm.Transport
 {
     public class TraceSegmentMapper : ITraceSegmentMapper
     {
+        private readonly bool _incompleteAsError;
+
+        public TraceSegmentMapper(IConfigAccessor configAccessor)
+        {
+            _incompleteAsError = configAccessor.Get<SpanableConfig>().IncompleteAsError;
+        }
+
         public SegmentRequest Map(TraceSegment traceSegment)
         {
             var segmentRequest = new SegmentRequest
@@ -34,6 +41,10 @@ namespace SkyApm.Transport
                     Peer = span.Peer,
                     Component = span.Component
                 };
+                if (!spanRequest.IsError && _incompleteAsError && span.IsInComplete())
+                {
+                    spanRequest.IsError = true;
+                }
                 foreach (var reference in span.References)
                     spanRequest.References.Add(new SegmentReferenceRequest
                     {
@@ -51,12 +62,6 @@ namespace SkyApm.Transport
 
                 foreach (var tag in span.Tags)
                     spanRequest.Tags.Add(new KeyValuePair<string, string>(tag.Key, tag.Value));
-
-                if (span.EndTime == default)
-                {
-                    span.Finish();
-                    spanRequest.Tags.Add(new KeyValuePair<string, string>(SegmentSpan.TAG_INCOMPLETE, "true"));
-                }
 
                 foreach (var log in span.Logs)
                 {

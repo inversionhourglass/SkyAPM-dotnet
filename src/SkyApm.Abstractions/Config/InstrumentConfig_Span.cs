@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SkyApm.Config
+﻿namespace SkyApm.Config
 {
     partial class InstrumentConfig
     {
-        public string StructType { get; set; } = "segment";
+        public string Scale { get; set; } = "segment";
     }
 }

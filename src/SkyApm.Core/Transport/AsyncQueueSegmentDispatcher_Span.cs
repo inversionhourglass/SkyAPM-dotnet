@@ -1,18 +1,18 @@
-﻿using SkyApm.Common;
-using SkyApm.Config;
+﻿using SkyApm.Config;
 using SkyApm.Tracing;
 using SkyApm.Tracing.Segments;
 using System;
+using System.Collections.Concurrent;
 using System.Threading;
 
 namespace SkyApm.Transport
 {
     partial class AsyncQueueSegmentDispatcher
     {
-        private readonly SpanStructureConfig _spanConfig;
+        private readonly SpanableConfig _spanConfig;
         private readonly ITraceSegmentMapper _traceSegmentMapper;
 
-        private readonly ConcurrentPriorityQueue<TimeSequencedSegment> _segments = new ConcurrentPriorityQueue<TimeSequencedSegment>();
+        private readonly ConcurrentQueue<DelaySegment> _segments = new ConcurrentQueue<DelaySegment>();
 
         public bool Dispatch(TraceSegment traceSegment)
         {
@@ -27,8 +27,8 @@ namespace SkyApm.Transport
             {
                 if (segment.IncompleteSpans > 0 && _spanConfig.DelaySeconds > 0)
                 {
-                    var sequencedSegment = new TimeSequencedSegment(segment, _spanConfig.DelaySeconds);
-                    _segments.Enqueue(sequencedSegment);
+                    var delaySegment = new DelaySegment(segment, _spanConfig.DelaySeconds);
+                    _segments.Enqueue(delaySegment);
                     return true;
                 }
                 traceSegment = segment.ToTraceSegment();
@@ -56,7 +56,7 @@ namespace SkyApm.Transport
 
         private void Enqueue(TraceSegment traceSegment)
         {
-            if (_config.QueueSize < _offset) return;
+            if (_config.QueueSize < _offset || traceSegment == null) return;
 
             var segmentRequest = _traceSegmentMapper.Map(traceSegment);
 

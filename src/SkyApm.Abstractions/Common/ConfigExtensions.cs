@@ -4,9 +4,9 @@ namespace SkyApm.Config
 {
     public static class ConfigExtensions
     {
-        public static bool IsSpanStructure(this InstrumentConfig config)
+        public static bool Spanable(this InstrumentConfig config)
         {
-            return "span".Equals(config.StructType, StringComparison.OrdinalIgnoreCase);
+            return "span".Equals(config.Scale, StringComparison.OrdinalIgnoreCase);
         }
     }
 }
