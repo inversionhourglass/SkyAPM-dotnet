@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Description>$(PackagePrefix).Diagnostics.CAP notifies of CAP messages.</Description>
+    <Description>$(PackagePrefix).Diagnostics.CAP notifies of CAP messages. Froked from official repository, use span as main structure.</Description>
     <AssemblyTitle>$(PackagePrefix).Diagnostics.CAP</AssemblyTitle>
     <AssemblyName>$(PackagePrefix).Diagnostics.CAP</AssemblyName>
     <PackageId>$(PackagePrefix).Diagnostics.CAP</PackageId>

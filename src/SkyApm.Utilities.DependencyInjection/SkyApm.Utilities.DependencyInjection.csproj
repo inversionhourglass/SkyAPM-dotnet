@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\build\common.props" />
   <PropertyGroup>
-    <Description>Microsoft.Utilities.DependencyInjection (IServiceCollection) support for $(Product).</Description>
+    <Description>Microsoft.Utilities.DependencyInjection (IServiceCollection) support for $(Product). Froked from official repository, use span as main structure.</Description>
     <AssemblyTitle>$(PackagePrefix).Utilities.DependencyInjection</AssemblyTitle>
     <TargetFrameworks>netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
     <AssemblyName>$(PackagePrefix).Utilities.DependencyInjection</AssemblyName>

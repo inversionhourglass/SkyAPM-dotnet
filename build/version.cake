@@ -71,6 +71,7 @@ public class BuildParameters
 		var versionMajor = doc.DocumentElement.SelectSingleNode("/Project/PropertyGroup/VersionMajor").InnerText;
 		var versionMinor = doc.DocumentElement.SelectSingleNode("/Project/PropertyGroup/VersionMinor").InnerText;
 		var versionPatch = doc.DocumentElement.SelectSingleNode("/Project/PropertyGroup/VersionPatch").InnerText;
+		var versionRevision = doc.DocumentElement.SelectSingleNode("/Project/PropertyGroup/VersionRevision").InnerText;
 		var versionQuality = doc.DocumentElement.SelectSingleNode("/Project/PropertyGroup/VersionQuality").InnerText;
 		versionQuality = string.IsNullOrWhiteSpace(versionQuality) ? null : versionQuality;
 
@@ -90,30 +91,32 @@ public class BuildParameters
 		suffix = string.IsNullOrWhiteSpace(suffix) ? null : suffix;
 
 		Version =
-			new BuildVersion(int.Parse(versionMajor), int.Parse(versionMinor), int.Parse(versionPatch), versionQuality);
+			new BuildVersion(int.Parse(versionMajor), int.Parse(versionMinor), int.Parse(versionPatch), int.Parse(versionRevision), versionQuality);
 		Version.Suffix = suffix;
 	}
 }
 
 public class BuildVersion
 {
-	public BuildVersion(int major, int minor, int patch, string quality)
+	public BuildVersion(int major, int minor, int patch, int revision, string quality)
 	{
 		Major = major;
 		Minor = minor;
 		Patch = patch;
+		Revision = revision;
 		Quality = quality;
 	}
 
 	public int Major { get; set; }
 	public int Minor { get; set; }
 	public int Patch { get; set; }
+	public int Revision { get; set; }
 	public string Quality { get; set; }
 	public string Suffix { get; set; }
 
 	public string VersionWithoutQuality()
 	{
-		return $"{Major}.{Minor}.{Patch}";
+		return $"{Major}.{Minor}.{Patch}.{Revision}";
 	}
 
 	public string Version()

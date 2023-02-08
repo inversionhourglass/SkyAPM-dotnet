@@ -8,7 +8,7 @@
     <AssemblyTitle>$(PackagePrefix).Diagnostics.EntityFrameworkCore.Sqlite</AssemblyTitle>
     <PackageId>$(PackagePrefix).Diagnostics.EntityFrameworkCore.Sqlite</PackageId>
     <PackageTags>SkyWalking;APM;EntityFrameworkCore;EF</PackageTags>
-    <Description>$(PackagePrefix).Diagnostics.EntityFrameworkCore.Sqlite notifies of EF requests.</Description>
+    <Description>$(PackagePrefix).Diagnostics.EntityFrameworkCore.Sqlite notifies of EF requests. Froked from official repository, use span as main structure.</Description>
     <RootNamespace>SkyApm.Diagnostics.EntityFrameworkCore</RootNamespace>
   </PropertyGroup>
   <ItemGroup>

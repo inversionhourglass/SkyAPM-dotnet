@@ -7,7 +7,7 @@
     <AssemblyTitle>$(PackagePrefix).Diagnostics.SmartSql</AssemblyTitle>
     <PackageId>$(PackagePrefix).Diagnostics.SmartSql</PackageId>
     <PackageTags>SkyWalking;APM;Diagnostics;SmartSql</PackageTags>
-    <Description>SkyApm.Diagnostics.SmartSql notifies of SmartSql requests.</Description>
+    <Description>SkyApm.Diagnostics.SmartSql notifies of SmartSql requests. Froked from official repository, use span as main structure.</Description>
     <RootNamespace>SkyApm.Diagnostics.SmartSql</RootNamespace>
   </PropertyGroup>
 

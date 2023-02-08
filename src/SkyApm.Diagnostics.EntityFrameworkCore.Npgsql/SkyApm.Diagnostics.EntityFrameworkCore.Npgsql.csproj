@@ -8,7 +8,7 @@
     <AssemblyTitle>$(PackagePrefix).Diagnostics.EntityFrameworkCore.Npgsql</AssemblyTitle>
     <PackageId>$(PackagePrefix).Diagnostics.EntityFrameworkCore.Npgsql</PackageId>
     <PackageTags>SkyWalking;APM;EntityFrameworkCore;EF</PackageTags>
-    <Description>$(PackagePrefix).Diagnostics.EntityFrameworkCore.Npgsql notifies of EF requests.</Description>
+    <Description>$(PackagePrefix).Diagnostics.EntityFrameworkCore.Npgsql notifies of EF requests. Froked from official repository, use span as main structure.</Description>
     <RootNamespace>SkyApm.Diagnostics.EntityFrameworkCore</RootNamespace>
   </PropertyGroup>
   <ItemGroup>

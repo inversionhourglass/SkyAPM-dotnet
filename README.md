@@ -15,7 +15,7 @@ SkyAPM C#/.NET instrument agent
 
 | Platform | Build Server | Master Status  |
 |--------- |------------- |---------|
-| AppVeyor |  Windows/Linux |[![Build status](https://ci.appveyor.com/api/projects/status/fl6vucwfn1vu94dv/branch/master?svg=true)](https://ci.appveyor.com/project/wu-sheng/skywalking-csharp/branch/master)|
+| AppVeyor |  Windows/Linux |[![Build status](https://ci.appveyor.com/api/projects/status/8cx4y6uxbl4pigj4/branch/spanable?svg=true)](https://ci.appveyor.com/api/projects/status/8cx4y6uxbl4pigj4/branch/spanable)|
 
 ## Nuget Packages
 

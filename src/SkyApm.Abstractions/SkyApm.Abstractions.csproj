@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\build\common.props" />
   <PropertyGroup>
-    <Description>$(Product) Core abstractions and interfaces for apm agent.</Description>
+    <Description>$(Product) Core abstractions and interfaces for apm agent. Froked from official repository, use span as main structure.</Description>
     <AssemblyTitle>$(PackagePrefix).Abstractions</AssemblyTitle>
     <AssemblyName>$(PackagePrefix).Abstractions</AssemblyName>
     <PackageId>$(PackagePrefix).Abstractions</PackageId>

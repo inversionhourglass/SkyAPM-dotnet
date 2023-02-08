@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <Import Project="..\..\build\common.props" />
     <PropertyGroup>
-        <Description>$(Product) ASP.NET Core Agent.</Description>
+        <Description>$(Product) ASP.NET Core Agent. Froked from official repository, use span as main structure.</Description>
         <AssemblyTitle>$(PackagePrefix).Agent.AspNetCore</AssemblyTitle>
         <AssemblyName>$(PackagePrefix).Agent.AspNetCore</AssemblyName>
         <PackageId>$(PackagePrefix).Agent.AspNetCore</PackageId>

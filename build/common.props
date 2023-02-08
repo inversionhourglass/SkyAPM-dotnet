@@ -2,15 +2,15 @@
   <Import Project="sign.props" />
   <Import Project="version.props" />
   <PropertyGroup>
-    <Authors>SkyAPM Team</Authors>
-    <Product>SkyAPM</Product>
-    <owners>SkyAPM</owners>
-    <PackagePrefix>SkyAPM</PackagePrefix>
-    <PackageIconUrl>https://avatars2.githubusercontent.com/u/32165127</PackageIconUrl>
-    <PackageProjectUrl>https://github.com/SkyAPM/SkyAPM-dotnet</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/SkyAPM/SkyAPM-dotnet/blob/master/LICENSE</PackageLicenseUrl>
+    <Authors>ihourglass</Authors>
+    <Product>SpanableSkyAPM</Product>
+    <owners>ihourglass</owners>
+    <PackagePrefix>SpanableSkyAPM</PackagePrefix>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageProjectUrl>https://github.com/inversionhourglass/SkyAPM-dotnet</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/inversionhourglass/SkyAPM-dotnet/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/SkyAPM/SkyAPM-dotnet</RepositoryUrl>
+    <RepositoryUrl>https://github.com/inversionhourglass/SkyAPM-dotnet</RepositoryUrl>
     <GenerateAssemblyConfigurationAttribute>True</GenerateAssemblyConfigurationAttribute>
     <GenerateAssemblyCompanyAttribute>True</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>True</GenerateAssemblyProductAttribute>
@@ -19,4 +19,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
+  <ItemGroup>
+	  <None Include="../../icon.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
 </Project>

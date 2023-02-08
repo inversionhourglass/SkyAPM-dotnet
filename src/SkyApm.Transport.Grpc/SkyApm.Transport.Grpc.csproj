@@ -2,7 +2,7 @@
     <Import Project="..\..\build\common.props" />
     
     <PropertyGroup>
-        <Description>$(Product) gRPC data transmitter.</Description>
+        <Description>$(Product) gRPC data transmitter. Froked from official repository, use span as main structure.</Description>
         <AssemblyTitle>$(PackagePrefix).Transport.Grpc</AssemblyTitle>
         <AssemblyName>$(PackagePrefix).Transport.Grpc</AssemblyName>
         <PackageId>$(PackagePrefix).Transport.Grpc</PackageId>

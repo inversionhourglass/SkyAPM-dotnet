@@ -1,7 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\build\common.props" />
   <PropertyGroup>
-	  <TargetFrameworks>netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
+	<Description>$(PackagePrefix).Diagnostics.Logging notifies logs. Froked from official repository, use span as main structure.</Description>
+	<AssemblyTitle>$(PackagePrefix).Diagnostics.Logging</AssemblyTitle>
+	<TargetFrameworks>netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
+	<AssemblyName>$(PackagePrefix).Diagnostics.Logging</AssemblyName>
+	<PackageId>$(PackagePrefix).Diagnostics.Logging</PackageId>
+	<PackageTags>SkyWalking;APM;Diagnostics;Logging</PackageTags>
+	<PackageReleaseNotes>
+	</PackageReleaseNotes>
+	<RootNamespace>SkyApm.Diagnostics.Logging</RootNamespace>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 

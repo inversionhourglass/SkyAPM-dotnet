@@ -8,7 +8,7 @@
         <AssemblyTitle>$(PackagePrefix).Diagnostics.EntityFrameworkCore</AssemblyTitle>
         <PackageId>$(PackagePrefix).Diagnostics.EntityFrameworkCore</PackageId>
         <PackageTags>$(PackagePrefix);APM;EntityFrameworkCore;EF</PackageTags>
-        <Description>SkyApm.Diagnostics.EntityFrameworkCore notifies of EF requests.</Description>
+        <Description>SkyApm.Diagnostics.EntityFrameworkCore notifies of EF requests. Froked from official repository, use span as main structure.</Description>
         <RootNamespace>SkyApm.Diagnostics.EntityFrameworkCore</RootNamespace>
     </PropertyGroup>
     <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">

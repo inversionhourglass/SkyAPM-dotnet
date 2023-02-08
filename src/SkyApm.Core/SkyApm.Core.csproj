@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\build\common.props" />
   <PropertyGroup>
-    <Description>$(Product) core components.</Description>
+    <Description>$(Product) core components. Froked from official repository, use span as main structure.</Description>
     <AssemblyTitle>$(PackagePrefix).Core</AssemblyTitle>
     <AssemblyName>$(PackagePrefix).Core</AssemblyName>
     <PackageId>$(PackagePrefix).Core</PackageId>

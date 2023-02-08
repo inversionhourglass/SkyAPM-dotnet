@@ -7,7 +7,7 @@
     <AssemblyTitle>$(PackagePrefix).Diagnostics.SmartSql</AssemblyTitle>
     <PackageId>$(PackagePrefix).Diagnostics.FreeSql</PackageId>
     <PackageTags>SkyWalking;APM;Diagnostics;FreeSql</PackageTags>
-    <Description>SkyApm.Diagnostics.FreeSql notifies of FreeSql requests.</Description>
+    <Description>SkyApm.Diagnostics.FreeSql notifies of FreeSql requests. Froked from official repository, use span as main structure.</Description>
     <RootNamespace>SkyApm.Diagnostics.FreeSql</RootNamespace>
   </PropertyGroup>
 

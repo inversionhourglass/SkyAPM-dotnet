@@ -3,7 +3,7 @@
     <Import Project="..\..\build\common.props" />
 
     <PropertyGroup>
-        <Description>$(PackagePrefix) dotnet global tool.</Description>
+        <Description>$(PackagePrefix) dotnet global tool. Froked from official repository, use span as main structure.</Description>
         <AssemblyTitle>$(PackagePrefix).DotNet.CLI</AssemblyTitle>
         <AssemblyName>$(PackagePrefix).DotNet.CLI</AssemblyName>
         <PackageId>$(PackagePrefix).DotNet.CLI</PackageId>
