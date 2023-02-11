@@ -46,7 +46,7 @@ namespace SkyApm.Transport
                     switch (_spanableConfig.IncompleteSymbol)
                     {
                         case IncompleteSymbol.Prefix:
-                            span.OperationName = _spanableConfig.IncompletePrefix + span.OperationName;
+                            spanRequest.OperationName = _spanableConfig.IncompletePrefix + span.OperationName;
                             break;
                         case IncompleteSymbol.Error:
                             spanRequest.IsError = true;
