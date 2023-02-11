@@ -7,7 +7,7 @@ SkyAPM C#/.NET instrument agent
 
 [![issues](https://img.shields.io/github/issues-raw/skyapm/skyapm-dotnet.svg?style=flat-square)](https://github.com/SkyAPM/SkyAPM-dotnet/issues)
 [![pulls](https://img.shields.io/github/issues-pr-raw/skyapm/skyapm-dotnet.svg?style=flat-square)](https://github.com/SkyAPM/SkyAPM-dotnet/pulls)
-[![releases](https://img.shields.io/github/release/skyapm/skyapm-dotnet.svg?style=flat-square)](https://github.com/SkyAPM/SkyAPM-dotnet/releases)
+[![releases](https://img.shields.io/github/release/inversionhourglass/skyapm-dotnet.svg?style=flat-square)](https://github.com/inversionhourglass/SkyAPM-dotnet/releases)
 [![Gitter](https://img.shields.io/gitter/room/openskywalking/lobby.svg?style=flat-square)](https://gitter.im/openskywalking/Lobby)
 [![Twitter Follow](https://img.shields.io/twitter/follow/asfskywalking.svg?style=flat-square&label=Follow&logo=twitter)](https://twitter.com/AsfSkyWalking)
 
@@ -21,11 +21,11 @@ SkyAPM C#/.NET instrument agent
 
 | Package Name |  NuGet | MyGet | Downloads 
 |--------------|  ------- |  ------- |  ---- 
-| SkyAPM.Agent.AspNetCore | [![nuget](https://img.shields.io/nuget/v/SkyAPM.Agent.AspNetCore.svg?style=flat-square)](https://www.nuget.org/packages/SkyAPM.Agent.AspNetCore) | [![myget](https://img.shields.io/myget/skyapm-dotnet/vpre/SkyAPM.Agent.AspNetCore.svg?style=flat-square)](https://www.myget.org/feed/skyapm-dotnet/package/nuget/SkyAPM.Agent.AspNetCore) | [![stats](https://img.shields.io/nuget/dt/SkyAPM.Agent.AspNetCore.svg?style=flat-square)](https://www.nuget.org/stats/packages/SkyAPM.Agent.AspNetCore?groupby=Version) 
-| SkyAPM.Agent.AspNet | [![nuget](https://img.shields.io/nuget/v/SkyAPM.Agent.AspNet.svg?style=flat-square)](https://www.nuget.org/packages/SkyAPM.Agent.AspNet) | [![myget](https://img.shields.io/myget/skyapm-dotnet/vpre/SkyAPM.Agent.AspNet.svg?style=flat-square)](https://www.myget.org/feed/skyapm-dotnet/package/nuget/SkyAPM.Agent.AspNet) | [![](https://img.shields.io/nuget/dt/SkyAPM.Agent.AspNet.svg?style=flat-square)](https://www.nuget.org/stats/packages/SkyAPM.Agent.AspNet?groupby=Version)
-| SkyAPM.Agent.GeneralHost | [![nuget](https://img.shields.io/nuget/v/SkyAPM.Agent.GeneralHost.svg?style=flat-square)](https://www.nuget.org/packages/SkyAPM.Agent.GeneralHost) | [![myget](https://img.shields.io/myget/skyapm-dotnet/vpre/SkyAPM.Agent.GeneralHost.svg?style=flat-square)](https://www.myget.org/feed/skyapm-dotnet/package/nuget/SkyAPM.Agent.GeneralHost) | [![](https://img.shields.io/nuget/dt/SkyAPM.Agent.GeneralHost.svg?style=flat-square)](https://www.nuget.org/stats/packages/SkyAPM.Agent.GeneralHost?groupby=Version)  
+| SpanableSkyAPM.Agent.AspNetCore | [![nuget](https://img.shields.io/nuget/v/SpanableSkyAPM.Agent.AspNetCore.svg?style=flat-square)](https://www.nuget.org/packages/SpanableSkyAPM.Agent.AspNetCore) | [![myget](https://img.shields.io/myget/skyapm-dotnet/vpre/SpanableSkyAPM.Agent.AspNetCore.svg?style=flat-square)](https://www.myget.org/feed/ihourglass/package/nuget/SpanableSkyAPM.Agent.AspNetCore) | [![stats](https://img.shields.io/nuget/dt/SpanableSkyAPM.Agent.AspNetCore.svg?style=flat-square)](https://www.nuget.org/stats/packages/SpanableSkyAPM.Agent.AspNetCore?groupby=Version) 
+| SpanableSkyAPM.Agent.AspNet | [![nuget](https://img.shields.io/nuget/v/SpanableSkyAPM.Agent.AspNet.svg?style=flat-square)](https://www.nuget.org/packages/SpanableSkyAPM.Agent.AspNet) | [![myget](https://img.shields.io/myget/skyapm-dotnet/vpre/SpanableSkyAPM.Agent.AspNet.svg?style=flat-square)](https://www.myget.org/feed/ihourglass/package/nuget/SpanableSkyAPM.Agent.AspNet) | [![](https://img.shields.io/nuget/dt/SpanableSkyAPM.Agent.AspNet.svg?style=flat-square)](https://www.nuget.org/stats/packages/SpanableSkyAPM.Agent.AspNet?groupby=Version)
+| SpanableSkyAPM.Agent.GeneralHost | [![nuget](https://img.shields.io/nuget/v/SpanableSkyAPM.Agent.GeneralHost.svg?style=flat-square)](https://www.nuget.org/packages/SpanableSkyAPM.Agent.GeneralHost) | [![myget](https://img.shields.io/myget/skyapm-dotnet/vpre/SpanableSkyAPM.Agent.GeneralHost.svg?style=flat-square)](https://www.myget.org/feed/ihourglass/package/nuget/SpanableSkyAPM.Agent.GeneralHost) | [![](https://img.shields.io/nuget/dt/SpanableSkyAPM.Agent.GeneralHost.svg?style=flat-square)](https://www.nuget.org/stats/packages/SpanableSkyAPM.Agent.GeneralHost?groupby=Version)  
 
-> MyGet feed URL https://www.myget.org/F/skyapm-dotnet/api/v3/index.json
+> MyGet feed URL https://www.myget.org/F/ihourglass/api/v3/index.json
 
 # Supported
 - This project currently supports apps targeting netcoreapp3.1、net5.0、net6.0 or higher.
@@ -51,13 +51,13 @@ Start with v1.0.0, SkyAPM .NET Core Agent only supports SkyWalking 8.0 or higher
 You can run the following command to install the SkyWalking .NET Core Agent in your project.
 
 ```
-dotnet add package SkyAPM.Agent.AspNetCore
+dotnet add package SpanableSkyAPM.Agent.AspNetCore
 ```
 
 ## How to use
 Set the `ASPNETCORE_HOSTINGSTARTUPASSEMBLIES` environment variable to support the activation of the SkyAPM .NET Core Agent. 
 
-- Add the assembly name of `SkyAPM.Agent.AspNetCore` to the `ASPNETCORE_HOSTINGSTARTUPASSEMBLIES` environment variable.
+- Add the assembly name of `SpanableSkyAPM.Agent.AspNetCore` to the `ASPNETCORE_HOSTINGSTARTUPASSEMBLIES` environment variable.
 
 ### Examples
 - On windows
@@ -65,8 +65,8 @@ Set the `ASPNETCORE_HOSTINGSTARTUPASSEMBLIES` environment variable to support th
 ```
 dotnet new mvc -n sampleapp
 cd sampleapp
-dotnet add package SkyAPM.Agent.AspNetCore
-set ASPNETCORE_HOSTINGSTARTUPASSEMBLIES=SkyAPM.Agent.AspNetCore
+dotnet add package SpanableSkyAPM.Agent.AspNetCore
+set ASPNETCORE_HOSTINGSTARTUPASSEMBLIES=SpanableSkyAPM.Agent.AspNetCore
 set SKYWALKING__SERVICENAME=sample_app
 dotnet run
 ```
@@ -76,8 +76,8 @@ dotnet run
 ```
 dotnet new mvc -n sampleapp
 cd sampleapp
-dotnet add package SkyAPM.Agent.AspNetCore
-export ASPNETCORE_HOSTINGSTARTUPASSEMBLIES=SkyAPM.Agent.AspNetCore
+dotnet add package SpanableSkyAPM.Agent.AspNetCore
+export ASPNETCORE_HOSTINGSTARTUPASSEMBLIES=SpanableSkyAPM.Agent.AspNetCore
 export SKYWALKING__SERVICENAME=sample_app
 dotnet run
 ```
