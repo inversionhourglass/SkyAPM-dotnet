@@ -6,11 +6,11 @@ namespace SkyApm.Transport
 {
     public class TraceSegmentMapper : ITraceSegmentMapper
     {
-        private readonly bool _incompleteAsError;
+        private readonly SpanableConfig _spanableConfig;
 
         public TraceSegmentMapper(IConfigAccessor configAccessor)
         {
-            _incompleteAsError = configAccessor.Get<SpanableConfig>().IncompleteAsError;
+            _spanableConfig = configAccessor.Get<SpanableConfig>();
         }
 
         public SegmentRequest Map(TraceSegment traceSegment)
@@ -41,9 +41,19 @@ namespace SkyApm.Transport
                     Peer = span.Peer,
                     Component = span.Component
                 };
-                if (!spanRequest.IsError && _incompleteAsError && span.IsInComplete())
+                if (span.IsInComplete())
                 {
-                    spanRequest.IsError = true;
+                    switch (_spanableConfig.IncompleteSymbol)
+                    {
+                        case IncompleteSymbol.Prefix:
+                            span.OperationName = _spanableConfig.IncompletePrefix + span.OperationName;
+                            break;
+                        case IncompleteSymbol.Error:
+                            spanRequest.IsError = true;
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 foreach (var reference in span.References)
                     spanRequest.References.Add(new SegmentReferenceRequest

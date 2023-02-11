@@ -9,7 +9,7 @@ namespace SkyApm.Transport
 {
     partial class AsyncQueueSegmentDispatcher
     {
-        private readonly SpanableConfig _spanConfig;
+        private readonly SpanableConfig _spanableConfig;
         private readonly ITraceSegmentMapper _traceSegmentMapper;
 
         private readonly ConcurrentQueue<DelaySegment> _segments = new ConcurrentQueue<DelaySegment>();
@@ -25,9 +25,9 @@ namespace SkyApm.Transport
 
             if (traceSegment is WideTraceSegment segment)
             {
-                if (segment.IncompleteSpans > 0 && _spanConfig.DelaySeconds > 0)
+                if (segment.IncompleteSpans > 0 && _spanableConfig.DelaySeconds > 0)
                 {
-                    var delaySegment = new DelaySegment(segment, _spanConfig.DelaySeconds);
+                    var delaySegment = new DelaySegment(segment, _spanableConfig.DelaySeconds);
                     _segments.Enqueue(delaySegment);
                     return true;
                 }

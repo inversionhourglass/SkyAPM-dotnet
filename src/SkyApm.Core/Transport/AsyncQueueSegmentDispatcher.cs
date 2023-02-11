@@ -51,7 +51,7 @@ namespace SkyApm.Transport
             _cancellation = new CancellationTokenSource();
 
             _traceSegmentMapper = traceSegmentMapper;
-            _spanConfig = configAccessor.Get<SpanableConfig>();
+            _spanableConfig = configAccessor.Get<SpanableConfig>();
         }
 
         public bool Dispatch(SegmentContext segmentContext)

@@ -2,6 +2,12 @@
 {
     partial class InstrumentConfig
     {
-        public string Scale { get; set; } = "segment";
+        public TraceScale Scale { get; set; } = TraceScale.Segment;
+    }
+
+    public enum TraceScale
+    {
+        Segment,
+        Span
     }
 }
