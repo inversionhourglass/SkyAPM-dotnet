@@ -31,9 +31,12 @@ namespace SkyApm.Sample.Frontend
 #else
              services.AddControllers();
 #endif
+            services.AddHttpClient();
 
             // DI grpc service
             services.AddSingleton<GreeterGrpcService>();
+
+            services.AddSkyAPMStaticAccessor();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
