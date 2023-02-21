@@ -4,6 +4,8 @@ using SkyApm.Logging;
 using SkyApm.Tracing.Segments;
 using SkyApm.Transport;
 using System;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace SkyApm.Tracing
 {
@@ -86,6 +88,38 @@ namespace SkyApm.Tracing
             }
         }
 
+        public Task ScopeSegmentAsync(Func<Task> func, string operationName = default)
+        {
+            if (operationName == default) operationName = nameof(SegmentScope);
+
+            var prepare = CreateLocalSpan(P(operationName));
+            var carrier = prepare.GetCrossThreadCarrier();
+            StopSpan(prepare);
+            using (new SegmentScope(this))
+            {
+                var span = CreateLocalSpan(operationName, carrier);
+                var task = func();
+                task.ContinueWith(t => StopSpan(span));
+                return task;
+            }
+        }
+
+        public Task<T> ScopeSegmentAsync<T>(Func<Task<T>> func, string operationName = default)
+        {
+            if (operationName == default) operationName = nameof(SegmentScope);
+
+            var prepare = CreateLocalSpan(P(operationName));
+            var carrier = prepare.GetCrossThreadCarrier();
+            StopSpan(prepare);
+            using (new SegmentScope(this))
+            {
+                var span = CreateLocalSpan(operationName, carrier);
+                var task = func();
+                task.ContinueWith(t => StopSpan(span));
+                return task;
+            }
+        }
+
         private bool CheckStructure(SpanOrSegmentContext spanOrSegmentContext)
         {
             if (_spanable)
@@ -112,6 +146,8 @@ namespace SkyApm.Tracing
             return false;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static string P(string operationName) => operationName + "-Prepare";
         #region SegmentContext
 
         private SegmentContext CreateLocalSegmentContext(string operationName, CrossThreadCarrier carrier, long startTimeMilliseconds = default)
@@ -187,5 +223,31 @@ namespace SkyApm.Tracing
             }
         }
         #endregion SegmentSpan
+
+        class SegmentScope : IDisposable
+        {
+            private readonly TracingContext _context;
+            private readonly TraceSegmentManager.SegmentStash _stash;
+
+            public SegmentScope(TracingContext context)
+            {
+                _context = context;
+                _stash = ((TraceSegmentManager)_context._traceSegmentManager).CreateStash();
+                _stash.Stash();
+            }
+
+            public void Dispose()
+            {
+                _stash.Restore();
+            }
+        }
+
+        class NullDisposable : IDisposable
+        {
+            public void Dispose()
+            {
+                
+            }
+        }
     }
 }

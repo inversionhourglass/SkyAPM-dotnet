@@ -16,6 +16,8 @@
  *
  */
 
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using SkyApm.Tracing;
 using SkyApm.Utilities.StaticAccessor;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -24,6 +26,7 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddSkyAPMStaticAccessor(this IServiceCollection services)
         {
+            services.TryAddSingleton<ITracingContext, NullTracingContext>();
             services.AddHostedService<StaticAccessorHostedService>();
 
             return services;

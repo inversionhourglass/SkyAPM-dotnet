@@ -43,6 +43,7 @@ namespace SkyApm.Utilities.StaticAccessor
             {
                 SkyApmInstances.TracingContext = _tracingContext;
                 SkyApmInstances.ConfigAccessor = _configAccessor;
+                SkyApmInstances.TracingConfig = _configAccessor.Get<TracingConfig>();
             }
 
             return Task.CompletedTask;

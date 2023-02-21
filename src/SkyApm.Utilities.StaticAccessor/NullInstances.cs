@@ -20,7 +20,7 @@ using SkyApm.Tracing.Segments;
 
 namespace SkyApm.Utilities.StaticAccessor
 {
-    public static class NullInstances
+    public static partial class NullInstances
     {
         public static readonly SegmentSpan SegmentSpan = new SegmentSpan("NULL", SpanType.Local);
 

@@ -1,4 +1,6 @@
 ﻿using SkyApm.Tracing.Segments;
+using System;
+using System.Threading.Tasks;
 
 namespace SkyApm.Tracing
 {
@@ -21,5 +23,9 @@ namespace SkyApm.Tracing
         SpanOrSegmentContext CreateExit(string operationName, string networkAddress, CrossThreadCarrier carrier, ICarrierHeaderCollection carrierHeader = default, long startTimeMilliseconds = default);
 
         void Finish(SpanOrSegmentContext spanOrSegmentContext);
+
+        Task ScopeSegmentAsync(Func<Task> func, string operationName = default);
+
+        Task<T> ScopeSegmentAsync<T>(Func<Task<T>> func, string operationName = default);
     }
 }
