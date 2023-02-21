@@ -121,7 +121,7 @@ namespace SkyApm.Sample.Backend.Controllers
                 });
                 //SkyApmTask.Run(async () =>
                 //{
-                //    await Task.Delay(3000);
+                //    await Task.Delay(10000);
                 //    await BackendDelayAsync(200);
                 //});
                 await BackendDelayAsync(300);
