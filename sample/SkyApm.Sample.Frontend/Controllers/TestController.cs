@@ -34,21 +34,9 @@ namespace SkyApm.Sample.Backend.Controllers
         {
             return Timing(async () =>
             {
-                var t1 = Task.Run(async () =>
-                {
-                    await Task.Delay(3000);
-                    await BackendDelayAsync(100);
-                });
-                var t2 = Task.Run(async () =>
-                {
-                    await Task.Delay(2000);
-                    await BackendDelayAsync(200);
-                });
-                var t3 = Task.Run(async () =>
-                {
-                    await Task.Delay(1000);
-                    await BackendDelayAsync(300);
-                });
+                var t1 = BackendDelayAsync(3000);
+                var t2 = BackendDelayAsync(1000);
+                var t3 = BackendDelayAsync(2000);
 
                 await Task.WhenAll(t1, t2, t3);
             });
@@ -128,7 +116,7 @@ namespace SkyApm.Sample.Backend.Controllers
                 await BackendDelayAsync(100);
                 Task.Run(async () =>
                 {
-                    await Task.Delay(3000);
+                    await Task.Delay(10000);
                     await BackendDelayAsync(200);
                 });
                 //SkyApmTask.Run(async () =>

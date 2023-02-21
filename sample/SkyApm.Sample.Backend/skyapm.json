@@ -1,14 +1,18 @@
 {
   "SkyWalking": {
-    "ServiceName": "asp-net-core-backend",
+    "ServiceName": "testing::asp-net-core-backend",
     "Namespace": "",
     "HeaderVersions": [
       "sw8"
     ],
+    //"Scale": "span",
+    //"Spanable": {
+    //  "DelaySeconds": 5
+    //},
     "Sampling": {
       "SamplePer3Secs": -1,
       "Percentage": -1.0,
-      "LogSqlParameterValue": false  
+      "LogSqlParameterValue": false
     },
     "Logging": {
       "Level": "Information",
