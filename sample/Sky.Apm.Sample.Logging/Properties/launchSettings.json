@@ -17,7 +17,7 @@
       "applicationUrl": "http://localhost:5008",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "SkyAPM.Agent.AspNetCore"
+        "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "SpanableSkyAPM.Agent.AspNetCore"
       }
     },
     "IIS Express": {
