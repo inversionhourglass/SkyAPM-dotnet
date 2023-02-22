@@ -80,8 +80,8 @@ namespace SkyApm.Sample.Backend.Controllers
             return Timing(async () =>
             {
                 await BackendDelayAsync(100);
-                new Thread(() => BackendDelayAsync(3000)).Start();
-                //new SkyApmThread(() => BackendDelayAsync(3000)).Start();
+                new Thread(() => BackendDelayAsync(3000).GetAwaiter().GetResult()).Start();
+                //new SkyApmThread(() => BackendDelayAsync(3000).GetAwaiter().GetResult()).Start();
                 await BackendDelayAsync(300);
             });
         }
@@ -91,8 +91,8 @@ namespace SkyApm.Sample.Backend.Controllers
             return Timing(async () =>
             {
                 await BackendDelayAsync(100);
-                ThreadPool.QueueUserWorkItem(state => BackendDelayAsync(3000));
-                //SkyApmThreadPool.QueueUserWorkItem(state => BackendDelayAsync(3000));
+                ThreadPool.QueueUserWorkItem(state => BackendDelayAsync(3000).GetAwaiter().GetResult());
+                //SkyApmThreadPool.QueueUserWorkItem(state => BackendDelayAsync(3000).GetAwaiter().GetResult());
                 await BackendDelayAsync(300);
             });
         }
@@ -102,8 +102,8 @@ namespace SkyApm.Sample.Backend.Controllers
             return Timing(async () =>
             {
                 await BackendDelayAsync(100);
-                var timer = new Timer(state => BackendDelayAsync(3000));
-                //var timer = new SkyApmTimer(state => BackendDelayAsync(3000));
+                var timer = new Timer(state => BackendDelayAsync(3000).GetAwaiter().GetResult());
+                //var timer = new SkyApmTimer(state => BackendDelayAsync(3000).GetAwaiter().GetResult());
                 timer.Change(100, Timeout.Infinite);
                 await BackendDelayAsync(300);
             });
@@ -114,12 +114,12 @@ namespace SkyApm.Sample.Backend.Controllers
             return Timing(async () =>
             {
                 await BackendDelayAsync(100);
-                Task.Run(async () =>
+                Task.Factory.StartNew(async () =>
                 {
                     await Task.Delay(10000);
                     await BackendDelayAsync(200);
                 });
-                //SkyApmTask.Run(async () =>
+                //Task.Factory.StartSkyApmNew(async () =>
                 //{
                 //    await Task.Delay(10000);
                 //    await BackendDelayAsync(200);
