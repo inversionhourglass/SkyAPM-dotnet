@@ -9,6 +9,8 @@ environment:
 skip_commits:
   files:
     - LICENSE
+    - docs/*
+    - '**/*.md'
 install:
 - git submodule update --init
 - dotnet build -c Release src/SkyApm.Transport.Grpc.Protocol 

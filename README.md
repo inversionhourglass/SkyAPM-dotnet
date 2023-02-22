@@ -12,7 +12,7 @@ SkyAPM C#/.NET instrument agent
 [![Twitter Follow](https://img.shields.io/twitter/follow/asfskywalking.svg?style=flat-square&label=Follow&logo=twitter)](https://twitter.com/AsfSkyWalking)
 
 ## Why spanable
-[Why spanbale](docs/WhyThis.md)
+[Why spanbale](docs/WhyThis/README.md)
 
 ## CI Build Status
 
