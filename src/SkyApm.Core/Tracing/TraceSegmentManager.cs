@@ -158,7 +158,7 @@ namespace SkyApm.Tracing
             if (traceSegment != null)
             {
                 segment = traceSegment.Finish(span, endTimeMilliseconds);
-                _traceSegments.Value = null;
+                if (segment != null) _traceSegments.Value = null;
             }
 
             _currentSpanRecord.Value = span.Parent;
