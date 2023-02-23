@@ -35,12 +35,15 @@ namespace SkyApm.Diagnostics.SmartSql
 
         private readonly ITracingContext _tracingContext;
         private readonly TracingConfig _tracingConfig;
+        private readonly IPeerFormatter _peerFormatter;
 
         public SmartSqlTracingDiagnosticProcessor(ITracingContext tracingContext,
-            IConfigAccessor configAccessor)
+            IConfigAccessor configAccessor,
+            IPeerFormatter peerFormatter)
         {
             _tracingContext = tracingContext;
             _tracingConfig = configAccessor.Get<TracingConfig>();
+            _peerFormatter = peerFormatter;
         }
         private void AddConnectionTag(SpanOrSegmentContext context, DbConnection dbConnection)
         {
@@ -50,7 +53,7 @@ namespace SkyApm.Diagnostics.SmartSql
             }
             if (dbConnection.DataSource != null)
             {
-                context.Span.Peer = new Common.StringOrIntValue(dbConnection.DataSource);
+                context.Span.Peer = _peerFormatter.GetDbPeer(dbConnection);
             }
             if (dbConnection.Database != null)
             {

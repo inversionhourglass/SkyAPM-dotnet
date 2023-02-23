@@ -16,12 +16,20 @@
  *
  */
 
+using SkyApm.Tracing;
 using System.Data.Common;
 
 namespace SkyApm.Diagnostics.EntityFrameworkCore
 {
     public class NpgsqlEntityFrameworkCoreSpanMetadataProvider : IEntityFrameworkCoreSpanMetadataProvider
     {
+        private readonly IPeerFormatter _peerFormatter;
+
+        public NpgsqlEntityFrameworkCoreSpanMetadataProvider(IPeerFormatter peerFormatter)
+        {
+            _peerFormatter = peerFormatter;
+        }
+
         public string Component { get; } = Common.Components.NPGSQL_ENTITYFRAMEWORKCORE_POSTGRESQL.GetStringValue();
 
         public bool Match(DbConnection connection)
@@ -31,7 +39,7 @@ namespace SkyApm.Diagnostics.EntityFrameworkCore
 
         public string GetPeer(DbConnection connection)
         {
-            return connection.DataSource;
+            return _peerFormatter.GetDbPeer(connection);
         }
     }
 }
