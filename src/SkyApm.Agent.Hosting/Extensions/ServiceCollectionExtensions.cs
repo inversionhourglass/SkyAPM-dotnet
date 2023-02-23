@@ -36,6 +36,8 @@ using SkyApm.Utilities.Logging;
 using System;
 using SkyApm;
 using SkyApm.Agent.Hosting;
+using SkyApm.PeerFormatters.SqlClient;
+using SkyApm.PeerFormatters.MySqlConnector;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -69,13 +71,16 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<IConfigurationFactory, ConfigurationFactory>();
             services.AddSingleton<IHostedService, InstrumentationHostedService>();
             services.AddSingleton<IEnvironmentProvider, HostingEnvironmentProvider>();
+            services.AddSingleton<IPeerFormatter, PeerFormatter>();
             services.AddTracing().AddSkyApmLogger().AddSampling().AddGrpcTransport().AddSkyApmLogging();
             var extensions = services.AddSkyApmExtensions()
                  .AddHttpClient()
                  .AddGrpcClient()
                  .AddSqlClient()
                  .AddGrpc()
-                 .AddEntityFrameworkCore(c => c.AddPomeloMysql().AddNpgsql().AddSqlite());
+                 .AddEntityFrameworkCore(c => c.AddPomeloMysql().AddNpgsql().AddSqlite())
+                 .AddSqlClientPeerFormatter()
+                 .AddMySqlConnectorPeerFormatter();
 
             extensionsSetup?.Invoke(extensions);
 
