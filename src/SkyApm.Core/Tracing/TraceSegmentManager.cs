@@ -55,6 +55,7 @@ namespace SkyApm.Tracing
                 }
                 traceSegment = CreateSegment(operationName, carrier);
                 span = traceSegment.CreateEntrySpan(operationName, startTimeMilliseconds);
+                span.AsyncLink();
                 _traceSegments.Value = traceSegment;
             }
             if (segmentReference != null)
@@ -82,7 +83,8 @@ namespace SkyApm.Tracing
                 var carrier = _currentSpanRecord.Value.GetCrossThreadCarrier();
                 traceSegment = CreateSegment(operationName, carrier);
                 span = traceSegment.CreateEntrySpan(operationName, startTimeMilliseconds);
-                if(carrier != null)
+                span.AsyncLink();
+                if (carrier != null)
                 {
                     span.References.Add(carrier);
                 }
@@ -124,6 +126,7 @@ namespace SkyApm.Tracing
                 var carrier = _currentSpanRecord.Value.GetCrossThreadCarrier();
                 traceSegment = CreateSegment(operationName, carrier);
                 span = traceSegment.CreateEntrySpan(operationName, startTimeMilliseconds);
+                span.AsyncLink();
                 if (carrier != null)
                 {
                     span.References.Add(carrier);

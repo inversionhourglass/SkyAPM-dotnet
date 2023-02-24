@@ -5,6 +5,7 @@ namespace SkyApm.Tracing.Segments
     partial class SegmentSpan
     {
         private const string TAG_INCOMPLETE = "incomplete";
+        private const string TAG_ASYNCLINK = "alink";
 
         private TraceSegment _segment;
         private readonly object _finishLocker = new object();
@@ -28,6 +29,19 @@ namespace SkyApm.Tracing.Segments
         public void AddLog(SpanLog log)
         {
             Logs.AddLog(log);
+        }
+
+        public bool IsAsyncLink()
+        {
+            return Tags.HasTag(TAG_ASYNCLINK);
+        }
+
+        /// <summary>
+        /// use this tag can find spans which parent span has been finished
+        /// </summary>
+        public void AsyncLink()
+        {
+            Tags.AddTag(TAG_ASYNCLINK, "true");
         }
 
         public bool IsInComplete()

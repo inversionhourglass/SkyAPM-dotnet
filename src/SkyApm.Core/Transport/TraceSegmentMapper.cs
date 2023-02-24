@@ -45,10 +45,24 @@ namespace SkyApm.Transport
                 {
                     switch (_spanableConfig.IncompleteSymbol)
                     {
-                        case IncompleteSymbol.Prefix:
+                        case ScenarioSymbol.Prefix:
                             spanRequest.OperationName = _spanableConfig.IncompletePrefix + span.OperationName;
                             break;
-                        case IncompleteSymbol.Error:
+                        case ScenarioSymbol.Error:
+                            spanRequest.IsError = true;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                if (span.IsAsyncLink())
+                {
+                    switch (_spanableConfig.AsyncLinkSymbol)
+                    {
+                        case ScenarioSymbol.Prefix:
+                            spanRequest.OperationName = _spanableConfig.AsyncLinkPrefix + span.OperationName;
+                            break;
+                        case ScenarioSymbol.Error:
                             spanRequest.IsError = true;
                             break;
                         default:
