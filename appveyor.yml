@@ -3,6 +3,7 @@ os: Visual Studio 2022
 branches:
   only:
   - spanable
+  - spanable-pre
 environment:
   BUILDING_ON_PLATFORM: win
   BuildEnvironment: appveyor
@@ -35,6 +36,13 @@ deploy:
   artifact: /artifacts\/packages\/.+\.nupkg/
   on:
     appveyor_repo_tag: true
+- provider: NuGet
+  api_key:
+    secure: j/3BFKq4roi7zxB6W8ycAG784wwjQuYufYIx5InkExY78G8vkFRYLws+JaSbxrbg
+  skip_symbols: true
+  artifact: /artifacts\/packages\/.+\.nupkg/
+  on:
+    branch: spanable-pre
 - provider: NuGet
   api_key:
     secure: j/3BFKq4roi7zxB6W8ycAG784wwjQuYufYIx5InkExY78G8vkFRYLws+JaSbxrbg
