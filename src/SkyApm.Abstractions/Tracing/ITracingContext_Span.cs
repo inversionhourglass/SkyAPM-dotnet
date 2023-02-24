@@ -6,6 +6,8 @@ namespace SkyApm.Tracing
 {
     partial interface ITracingContext
     {
+        string TraceId { get; }
+
         SpanOrSegmentContext CurrentEntry { get; }
 
         SpanOrSegmentContext CurrentLocal { get; }

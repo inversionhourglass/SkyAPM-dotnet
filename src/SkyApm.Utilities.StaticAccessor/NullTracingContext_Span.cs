@@ -7,6 +7,8 @@ namespace SkyApm.Utilities.StaticAccessor
 {
     partial class NullTracingContext
     {
+        public string TraceId => null;
+
         public SegmentSpan ActiveSpan => NullInstances.SegmentSpan;
 
         public SpanOrSegmentContext CurrentEntry => NullInstances.SpanOrSegmentContext;
