@@ -1,5 +1,6 @@
 ﻿namespace System.Threading
 {
+    [Obsolete("Use Delegates.Extensions.Diagnostics instead")]
     public static class SkyApmThreadPool
     {
         /// <inheritdoc cref="ThreadPool.QueueUserWorkItem(WaitCallback)"/>

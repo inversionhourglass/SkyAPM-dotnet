@@ -2,6 +2,7 @@
 
 namespace System.Threading
 {
+    [Obsolete("Use Delegates.Extensions.Diagnostics instead")]
     public class SkyApmThread
     {
         private readonly Thread _thread;

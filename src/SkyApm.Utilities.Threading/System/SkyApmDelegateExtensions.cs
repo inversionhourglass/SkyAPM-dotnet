@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace System
 {
+    [Obsolete("Use Delegates.Extensions.Diagnostics instead")]
     public static class SkyApmDelegateExtensions
     {
         internal const string WRAP_NAME = "LocalFork";

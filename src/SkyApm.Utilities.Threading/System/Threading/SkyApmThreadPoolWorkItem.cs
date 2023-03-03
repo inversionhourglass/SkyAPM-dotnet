@@ -4,6 +4,7 @@ using SkyApm.Utilities.StaticAccessor;
 
 namespace System.Threading
 {
+    [Obsolete("Use Delegates.Extensions.Diagnostics instead")]
     public class SkyApmThreadPoolWorkItem : IThreadPoolWorkItem
     {
         private readonly string _operationName;

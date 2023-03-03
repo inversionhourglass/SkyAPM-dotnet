@@ -2,6 +2,7 @@
 
 namespace System.Threading
 {
+    [Obsolete("Use Delegates.Extensions.Diagnostics instead")]
     public class SkyApmTimer : MarshalByRefObject, IAsyncDisposable, IDisposable
     {
         private readonly Timer _timer;

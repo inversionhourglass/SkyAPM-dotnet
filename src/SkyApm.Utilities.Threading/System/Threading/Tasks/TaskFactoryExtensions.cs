@@ -1,5 +1,6 @@
 ﻿namespace System.Threading.Tasks
 {
+    [Obsolete("Use Delegates.Extensions.Diagnostics instead")]
     public static class TaskFactoryExtensions
     {
         /// <inheritdoc cref="TaskFactory.StartNew(Action)"/>

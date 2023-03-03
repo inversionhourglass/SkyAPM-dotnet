@@ -1,5 +1,6 @@
 ﻿namespace System.Threading.Tasks
 {
+    [Obsolete("Use Delegates.Extensions.Diagnostics instead")]
     public class SkyApmTask : Task
     {
         public SkyApmTask(Action action) : base(action.SkySegmentWrap())
