@@ -122,6 +122,30 @@ namespace SkyApm.Tracing
             }
         }
 
+        public void ClearContext()
+        {
+            if (_spanable)
+            {
+                _traceSegmentManager.ClearContext();
+            }
+            else
+            {
+                _segmentContextFactory.ClearContext();
+            }
+        }
+
+        public void WeakenContext()
+        {
+            if (_spanable)
+            {
+                _traceSegmentManager.WeakenContext();
+            }
+            else
+            {
+                _segmentContextFactory.WeakenContext();
+            }
+        }
+
         private bool CheckStructure(SpanOrSegmentContext spanOrSegmentContext)
         {
             if (_spanable)

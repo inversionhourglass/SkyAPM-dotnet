@@ -7,6 +7,7 @@ namespace SkyApm.Tracing
 {
     public class TraceSegmentManager : ITraceSegmentManager
     {
+        private readonly AsyncLocal<string> _weakParent = new AsyncLocal<string>();
         private readonly AsyncLocal<WideTraceSegment> _traceSegments = new AsyncLocal<WideTraceSegment>();
         private readonly AsyncLocal<SegmentSpan> _currentSpanRecord = new AsyncLocal<SegmentSpan>();
 
@@ -25,6 +26,7 @@ namespace SkyApm.Tracing
 
         public SegmentSpan CreateEntrySpan(string operationName, ICarrier carrier, long startTimeMilliseconds = 0)
         {
+            var newSegment = false;
             SegmentReference segmentReference = null;
             var traceSegment = _traceSegments.Value;
             // Ignore carrier when TraceSegment already exists.
@@ -35,6 +37,7 @@ namespace SkyApm.Tracing
                 segmentReference = carrier.ToReference();
 
                 _traceSegments.Value = traceSegment;
+                newSegment = true;
             }
 
             var span = traceSegment.CreateEntrySpan(operationName, startTimeMilliseconds);
@@ -62,18 +65,24 @@ namespace SkyApm.Tracing
             {
                 span.References.Add(segmentReference);
             }
+            else if (newSegment)
+            {
+                span.WeakParentRef(_weakParent.Value);
+            }
             _currentSpanRecord.Value = span;
             return span;
         }
 
         public SegmentSpan CreateLocalSpan(string operationName, long startTimeMilliseconds = 0)
         {
+            var newSegment = false;
             var traceSegment = _traceSegments.Value;
             if (traceSegment == null)
             {
                 traceSegment = CreateSegment(operationName, NullableCarrier.Instance);
 
                 _traceSegments.Value = traceSegment;
+                newSegment = true;
             }
 
             var span = traceSegment.CreateLocalSpan(operationName, startTimeMilliseconds);
@@ -89,6 +98,10 @@ namespace SkyApm.Tracing
                     span.References.Add(carrier);
                 }
                 _traceSegments.Value = traceSegment;
+            }
+            if (newSegment)
+            {
+                span.WeakParentRef(_weakParent.Value);
             }
             _currentSpanRecord.Value = span;
             return span;
@@ -111,12 +124,14 @@ namespace SkyApm.Tracing
 
         public SegmentSpan CreateExitSpan(string operationName, StringOrIntValue networkAddress, long startTimeMilliseconds = 0)
         {
+            var newSegment = false;
             var traceSegment = _traceSegments.Value;
             if (traceSegment == null)
             {
                 traceSegment = CreateSegment(operationName, NullableCarrier.Instance);
 
                 _traceSegments.Value = traceSegment;
+                newSegment = true;
             }
 
             var span = traceSegment.CreateExitSpan(operationName, startTimeMilliseconds);
@@ -132,6 +147,10 @@ namespace SkyApm.Tracing
                     span.References.Add(carrier);
                 }
                 _traceSegments.Value = traceSegment;
+            }
+            if (newSegment)
+            {
+                span.WeakParentRef(_weakParent.Value);
             }
             span.Peer = networkAddress;
             _currentSpanRecord.Value = span;
@@ -185,6 +204,22 @@ namespace SkyApm.Tracing
 
             _currentSpanRecord.Value = span?.Parent;
             return (segment, span);
+        }
+
+        public void ClearContext()
+        {
+            _traceSegments.Value = null;
+            _currentSpanRecord.Value = null;
+        }
+
+        public void WeakenContext()
+        {
+            var segment = _traceSegments.Value;
+            if (segment != null)
+            {
+                _weakParent.Value = $"{segment.TraceId}|{segment.SegmentId}|{segment.CurrentSpan.SpanId}";
+            }
+            ClearContext();
         }
 
         private WideTraceSegment CreateSegment(string operationName, ICarrier carrier)

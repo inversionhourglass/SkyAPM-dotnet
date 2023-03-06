@@ -20,5 +20,9 @@ namespace SkyApm.Tracing
         TraceSegment StopSpan(SegmentSpan span, long endTimeMilliseconds = default);
 
         (TraceSegment, SegmentSpan) StopSpan(long endTimeMilliseconds = default);
+
+        void ClearContext();
+
+        void WeakenContext();
     }
 }
