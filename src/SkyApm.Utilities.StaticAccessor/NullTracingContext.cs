@@ -23,5 +23,14 @@ namespace SkyApm.Utilities.StaticAccessor
 {
     internal partial class NullTracingContext : ITracingContext
     {
+        public void ClearContext()
+        {
+
+        }
+
+        public void WeakenContext()
+        {
+
+        }
     }
 }

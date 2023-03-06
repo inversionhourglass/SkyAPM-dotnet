@@ -22,5 +22,8 @@ namespace SkyApm.Tracing
 {
     public partial interface ITracingContext
     {
+        void ClearContext();
+
+        void WeakenContext();
     }
 }
