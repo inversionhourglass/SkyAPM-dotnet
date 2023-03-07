@@ -16,13 +16,13 @@ namespace SkyApm.Diagnostics.Delegates
         }
 
         [DiagnosticName($"{Diagnostician.LISTENER_NAME}.{SkyApmCategory.CLEAN_CONTEXT}.{Diagnostician.Ids.EXECUTING}")]
-        public void OnClearContextExecuting(ExecutingContext context)
+        public void OnClearContextExecuting([Object] ExecutingContext context)
         {
             _tracingContext.ClearContext();
         }
 
         [DiagnosticName($"{Diagnostician.LISTENER_NAME}.{SkyApmCategory.WEAKEN_CONTEXT}.{Diagnostician.Ids.EXECUTING}")]
-        public void OnWeakenContextExecuting(ExecutingContext context)
+        public void OnWeakenContextExecuting([Object] ExecutingContext context)
         {
             _tracingContext.WeakenContext();
         }
