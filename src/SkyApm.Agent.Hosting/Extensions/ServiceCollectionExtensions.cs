@@ -38,6 +38,7 @@ using SkyApm;
 using SkyApm.Agent.Hosting;
 using SkyApm.PeerFormatters.SqlClient;
 using SkyApm.PeerFormatters.MySqlConnector;
+using SkyApm.Diagnostics.Delegates;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -76,6 +77,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<IPeerFormatter, PeerFormatter>();
             services.AddTracing().AddSkyApmLogger().AddSampling().AddGrpcTransport().AddSkyApmLogging();
             var extensions = services.AddSkyApmExtensions()
+                 .AddDelegates()
                  .AddHttpClient()
                  .AddGrpcClient()
                  .AddSqlClient()
