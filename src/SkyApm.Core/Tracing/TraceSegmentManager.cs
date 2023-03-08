@@ -268,36 +268,5 @@ namespace SkyApm.Tracing
             var sampler = _samplerChainBuilder.Build();
             return sampler(samplingContext);
         }
-
-        internal SegmentStash CreateStash()
-        {
-            return new SegmentStash(this);
-        }
-
-        internal class SegmentStash
-        {
-            private readonly TraceSegmentManager _manager;
-
-            private WideTraceSegment _segment;
-            private volatile bool _stashed;
-
-            public SegmentStash(TraceSegmentManager manager)
-            {
-                _manager = manager;
-            }
-
-            public void Stash()
-            {
-                _segment = _manager._traceSegments.Value;
-                _stashed = true;
-            }
-
-            public void Restore()
-            {
-                if (!_stashed) return;
-
-                _manager._traceSegments.Value = _segment;
-            }
-        }
     }
 }

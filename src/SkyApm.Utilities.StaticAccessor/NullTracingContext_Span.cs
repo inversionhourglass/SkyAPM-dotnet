@@ -1,7 +1,5 @@
 ﻿using SkyApm.Tracing.Segments;
 using SkyApm.Tracing;
-using System;
-using System.Threading.Tasks;
 
 namespace SkyApm.Utilities.StaticAccessor
 {
@@ -45,16 +43,6 @@ namespace SkyApm.Utilities.StaticAccessor
         public void Finish(SpanOrSegmentContext spanOrSegmentContext)
         {
 
-        }
-
-        public Task ScopeSegmentAsync(Func<Task> func, string operationName = default)
-        {
-            return func();
-        }
-
-        public Task<T> ScopeSegmentAsync<T>(Func<Task<T>> func, string operationName = default)
-        {
-            return func();
         }
     }
 }
