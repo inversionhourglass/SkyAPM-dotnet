@@ -21,6 +21,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using SkyApm.Config;
 using SkyApm.Logging;
+using SkyApm.Transport.Grpc.Common;
 using SkyWalking.NetworkProtocol.V3;
 
 namespace SkyApm.Transport.Grpc.V8
@@ -57,7 +58,7 @@ namespace SkyApm.Transport.Grpc.V8
             {
                 var request = new CLRMetricCollection
                 {
-                    Service = _instrumentConfig.ServiceName ?? _instrumentConfig.ApplicationCode,
+                    Service = _instrumentConfig.ServiceName,
                     ServiceInstance = _instrumentConfig.ServiceInstanceName,
                 };
                 var metric = new CLRMetric

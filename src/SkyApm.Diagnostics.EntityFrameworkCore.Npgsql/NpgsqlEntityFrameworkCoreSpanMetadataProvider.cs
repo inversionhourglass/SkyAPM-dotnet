@@ -16,6 +16,7 @@
  *
  */
 
+using SkyApm.Common;
 using SkyApm.Tracing;
 using System.Data.Common;
 
@@ -30,7 +31,7 @@ namespace SkyApm.Diagnostics.EntityFrameworkCore
             _peerFormatter = peerFormatter;
         }
 
-        public string Component { get; } = Common.Components.NPGSQL_ENTITYFRAMEWORKCORE_POSTGRESQL.GetStringValue();
+        public StringOrIntValue Component { get; } = Common.Components.NPGSQL_ENTITYFRAMEWORKCORE_POSTGRESQL;
 
         public bool Match(DbConnection connection)
         {

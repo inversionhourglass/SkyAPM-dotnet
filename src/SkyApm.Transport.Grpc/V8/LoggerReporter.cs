@@ -18,10 +18,12 @@
 
 using SkyApm.Config;
 using SkyApm.Logging;
+using SkyApm.Transport.Grpc.Common;
 using SkyWalking.NetworkProtocol.V3;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -30,21 +32,22 @@ namespace SkyApm.Transport.Grpc
 {
     public class LoggerReporter : ILoggerReporter
     {
-
         private readonly ConnectionManager _connectionManager;
         private readonly ILogger _logger;
-        private readonly GrpcConfig _config;
+        private readonly GrpcConfig _grpcConfig;
+        private readonly InstrumentConfig _instrumentConfig;
 
         public LoggerReporter(ConnectionManager connectionManager, IConfigAccessor configAccessor,
             ILoggerFactory loggerFactory)
         {
             _connectionManager = connectionManager;
-            _config = configAccessor.Get<GrpcConfig>();
+            _grpcConfig = configAccessor.Get<GrpcConfig>();
+            _instrumentConfig = configAccessor.Get<InstrumentConfig>();
             _logger = loggerFactory.CreateLogger(typeof(SegmentReporter));
         }
-
-
-        public async Task ReportAsync(IReadOnlyCollection<LoggerRequest> loggerRequests, CancellationToken cancellationToken = default)
+        
+        public async Task ReportAsync(IReadOnlyCollection<LoggerRequest> loggerRequests,
+            CancellationToken cancellationToken = default)
         {
             if (!_connectionManager.Ready)
             {
@@ -56,54 +59,57 @@ namespace SkyApm.Transport.Grpc
             {
                 var stopwatch = Stopwatch.StartNew();
                 var client = new LogReportService.LogReportServiceClient(connection);
-                using (var asyncClientStreamingCall = client.collect(_config.GetMeta(), _config.GetReportTimeout(), cancellationToken))
+                using (var asyncClientStreamingCall = client.collect(_grpcConfig.GetMeta(),
+                           _grpcConfig.GetReportTimeout(), cancellationToken))
                 {
                     foreach (var loggerRequest in loggerRequests)
                     {
-                        StringBuilder logmessage=new StringBuilder();
+                        var logMessage = new StringBuilder();
                         foreach (var log in loggerRequest.Logs)
                         {
-                            logmessage.Append($"\r\n{log.Key} : {log.Value}");
+                            logMessage.Append($"\r\n{log.Key} : {log.Value}");
                         }
-                        var logbody = new LogData()
+
+                        var logBody = new LogData()
                         {
                             TraceContext = new TraceContext()
                             {
-                                TraceId = loggerRequest.SegmentRequest.TraceId,
-                                TraceSegmentId = loggerRequest.SegmentRequest.Segment.SegmentId,
+                                TraceId = loggerRequest.SegmentReference?.TraceId ?? string.Empty,
+                                TraceSegmentId = loggerRequest.SegmentReference?.SegmentId ?? string.Empty,
                                 //SpanId=item.Segment
                             },
                             Timestamp = loggerRequest.Date,
-                            Service = loggerRequest.SegmentRequest.Segment.ServiceId,
-                            ServiceInstance = loggerRequest.SegmentRequest.Segment.ServiceInstanceId,
+                            Service = _instrumentConfig.ServiceName,
+                            ServiceInstance = _instrumentConfig.ServiceInstanceName,
                             Endpoint = "",
                             Body = new LogDataBody()
                             {
                                 Type = "text",
                                 Text = new TextLog()
                                 {
-                                    Text = logmessage.ToString(),
+                                    Text = logMessage.ToString(),
                                 },
                             },
                         };
-                        await asyncClientStreamingCall.RequestStream.WriteAsync(logbody);
+                        await asyncClientStreamingCall.RequestStream.WriteAsync(logBody);
                     }
 
                     await asyncClientStreamingCall.RequestStream.CompleteAsync();
                     await asyncClientStreamingCall.ResponseAsync;
 
                     stopwatch.Stop();
-                    _logger.Information($"Report {loggerRequests.Count} logger logger. cost: {stopwatch.Elapsed}s");
+                    _logger.Information($"Report {loggerRequests.Count} logs. cost: {stopwatch.Elapsed}s");
                 }
-
+            }
+            catch (IOException ex)
+            {
+                _logger.Error("Report trace segment fail.", ex);
+                _connectionManager.Failure(ex);
             }
             catch (Exception ex)
             {
                 _logger.Error("Report trace segment fail.", ex);
-                _connectionManager.Failure(ex);
-
             }
-
         }
     }
 }

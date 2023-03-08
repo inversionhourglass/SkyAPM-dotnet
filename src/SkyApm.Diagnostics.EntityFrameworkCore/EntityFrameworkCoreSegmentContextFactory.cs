@@ -65,7 +65,7 @@ namespace SkyApm.Diagnostics.EntityFrameworkCore
         {
             var context = _tracingContext.CreateExit(operationName,
                 metadataProvider.GetPeer(dbCommand.Connection));
-            context.Span.Component = new StringOrIntValue(metadataProvider.Component);
+            context.Span.Component = metadataProvider.Component;
             return context;
         }
 

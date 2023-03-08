@@ -24,7 +24,6 @@ using SkyApm.Diagnostics.Grpc;
 using SkyApm.Diagnostics.Grpc.Net.Client;
 using SkyApm.Diagnostics.HttpClient;
 using SkyApm.Diagnostics.SqlClient;
-using SkyApm.Logging;
 using SkyApm.Sampling;
 using SkyApm.Service;
 using SkyApm.Tracing;
@@ -39,6 +38,8 @@ using SkyApm.Agent.Hosting;
 using SkyApm.PeerFormatters.SqlClient;
 using SkyApm.PeerFormatters.MySqlConnector;
 using SkyApm.Diagnostics.Delegates;
+using SkyApm.Diagnostics.MSLogging;
+using ILoggerFactory = SkyApm.Logging.ILoggerFactory;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -49,10 +50,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSkyAPMCore(extensionsSetup);
             return services;
         }
-
         
-
-        internal static IServiceCollection AddSkyAPMCore(this IServiceCollection services, Action<SkyApmExtensions> extensionsSetup = null)
+        private static IServiceCollection AddSkyAPMCore(this IServiceCollection services, Action<SkyApmExtensions> extensionsSetup = null)
         {
             if (services == null)
             {
@@ -74,17 +73,19 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<IConfigurationFactory, ConfigurationFactory>();
             services.AddSingleton<IHostedService, InstrumentationHostedService>();
             services.AddSingleton<IEnvironmentProvider, HostingEnvironmentProvider>();
+            services.AddSingleton<ISkyApmLogDispatcher, AsyncQueueSkyApmLogDispatcher>();
             services.AddSingleton<IPeerFormatter, PeerFormatter>();
-            services.AddTracing().AddSkyApmLogger().AddSampling().AddGrpcTransport().AddSkyApmLogging();
+            services.AddTracing().AddSampling().AddGrpcTransport().AddSkyApmLogging();
             var extensions = services.AddSkyApmExtensions()
-                 .AddDelegates()
-                 .AddHttpClient()
-                 .AddGrpcClient()
-                 .AddSqlClient()
-                 .AddGrpc()
-                 .AddEntityFrameworkCore(c => c.AddPomeloMysql().AddNpgsql().AddSqlite())
-                 .AddSqlClientPeerFormatter()
-                 .AddMySqlConnectorPeerFormatter();
+                .AddDelegates()
+                .AddHttpClient()
+                .AddGrpcClient()
+                .AddSqlClient()
+                .AddGrpc()
+                .AddEntityFrameworkCore(c => c.AddPomeloMysql().AddNpgsql().AddSqlite())
+                .AddMSLogging()
+                .AddSqlClientPeerFormatter()
+                .AddMySqlConnectorPeerFormatter();
 
             extensionsSetup?.Invoke(extensions);
 
@@ -103,20 +104,14 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<IEntrySegmentContextAccessor, EntrySegmentContextAccessor>();
             services.AddSingleton<ILocalSegmentContextAccessor, LocalSegmentContextAccessor>();
             services.AddSingleton<IExitSegmentContextAccessor, ExitSegmentContextAccessor>();
+            services.AddSingleton<ISegmentContextAccessor, SegmentContextAccessor>();
             services.AddSingleton<ISamplerChainBuilder, SamplerChainBuilder>();
             services.AddSingleton<IUniqueIdGenerator, UniqueIdGenerator>();
             services.AddSingleton<ISegmentContextMapper, SegmentContextMapper>();
             services.AddSingleton<IBase64Formatter, Base64Formatter>();
             return services;
         }
-
-        public static IServiceCollection AddSkyApmLogger(this IServiceCollection services)
-        {
-            services.AddSingleton<ISkyApmLogDispatcher, AsyncQueueSkyApmLogDispatcher>();
-            services.AddSingleton<ILoggerContextContextMapper, LoggerContextContextMapper>();
-            return services;
-        }
-
+        
         private static IServiceCollection AddSampling(this IServiceCollection services)
         {
             services.AddSingleton<SimpleCountSamplingInterceptor>();
