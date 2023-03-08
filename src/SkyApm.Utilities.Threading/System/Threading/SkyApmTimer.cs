@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using SkyApm.Diagnostics.Delegates;
+using System.Threading.Tasks;
 
 namespace System.Threading
 {
@@ -9,27 +10,27 @@ namespace System.Threading
 
         public SkyApmTimer(TimerCallback callback)
         {
-            _timer = new Timer(callback.SkySegmentWrap());
+            _timer = new Timer(callback.Diagnostic(SkyApmCategory.FORK));
         }
 
         public SkyApmTimer(TimerCallback callback, object state, int dueTime, int period)
         {
-            _timer = new Timer(callback.SkySegmentWrap(), state, dueTime, period);
+            _timer = new Timer(callback.Diagnostic(SkyApmCategory.FORK), state, dueTime, period);
         }
         
         public SkyApmTimer(TimerCallback callback, object state, long dueTime, long period)
         {
-            _timer = new Timer(callback.SkySegmentWrap(), state, dueTime, period);
+            _timer = new Timer(callback.Diagnostic(SkyApmCategory.FORK), state, dueTime, period);
         }
 
         public SkyApmTimer(TimerCallback callback, object state, TimeSpan dueTime, TimeSpan period)
         {
-            _timer = new Timer(callback.SkySegmentWrap(), state, dueTime, period);
+            _timer = new Timer(callback.Diagnostic(SkyApmCategory.FORK), state, dueTime, period);
         }
 
         public SkyApmTimer(TimerCallback callback, object state, uint dueTime, uint period)
         {
-            _timer = new Timer(callback.SkySegmentWrap(), state, dueTime, period);
+            _timer = new Timer(callback.Diagnostic(SkyApmCategory.FORK), state, dueTime, period);
         }
 
         /// <inheritdoc cref="Timer.Change(int, int)"/>

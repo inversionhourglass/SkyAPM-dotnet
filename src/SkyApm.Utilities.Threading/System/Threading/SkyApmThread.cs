@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using SkyApm.Diagnostics.Delegates;
+using System.Globalization;
 
 namespace System.Threading
 {
@@ -9,22 +10,22 @@ namespace System.Threading
 
         public SkyApmThread(ParameterizedThreadStart start)
         {
-            _thread = new Thread(start.SkySegmentWrap());
+            _thread = new Thread(start.Diagnostic(SkyApmCategory.FORK));
         }
 
         public SkyApmThread(ParameterizedThreadStart start, int maxStackSize)
         {
-            _thread = new Thread(start.SkySegmentWrap(), maxStackSize);
+            _thread = new Thread(start.Diagnostic(SkyApmCategory.FORK), maxStackSize);
         }
 
         public SkyApmThread(ThreadStart start)
         {
-            _thread = new Thread(start.SkySegmentWrap());
+            _thread = new Thread(start.Diagnostic(SkyApmCategory.FORK));
         }
 
         public SkyApmThread(ThreadStart start, int maxStackSize)
         {
-            _thread = new Thread(start.SkySegmentWrap(), maxStackSize);
+            _thread = new Thread(start.Diagnostic(SkyApmCategory.FORK), maxStackSize);
         }
 
         /// <inheritdoc cref="Thread.ApartmentState"/>

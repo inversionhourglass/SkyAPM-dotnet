@@ -14,6 +14,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\SkyApm.Core\SkyApm.Core.csproj" />
+    <ProjectReference Include="..\SkyApm.Diagnostics.Delegates\SkyApm.Diagnostics.Delegates.csproj" />
     <ProjectReference Include="..\SkyApm.Utilities.StaticAccessor\SkyApm.Utilities.StaticAccessor.csproj" />
   </ItemGroup>
 

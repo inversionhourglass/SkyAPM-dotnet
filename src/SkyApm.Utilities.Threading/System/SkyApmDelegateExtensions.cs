@@ -1,12 +1,14 @@
 ﻿using SkyApm.Tracing;
 using SkyApm.Tracing.Segments;
 using SkyApm.Utilities.StaticAccessor;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace System
 {
+    [EditorBrowsable(EditorBrowsableState.Never)]
     [Obsolete("Use Delegates.Extensions.Diagnostics instead")]
     public static class SkyApmDelegateExtensions
     {
@@ -30,7 +32,7 @@ namespace System
                 catch (Exception ex)
                 {
                     local.Span.ErrorOccurred(ex, SkyApmInstances.TracingConfig);
-                    throw ex;
+                    throw;
                 }
                 finally
                 {
@@ -60,7 +62,7 @@ namespace System
                 catch (Exception ex)
                 {
                     local.Span.ErrorOccurred(ex, SkyApmInstances.TracingConfig);
-                    throw ex;
+                    throw;
                 }
                 finally
                 {
@@ -90,7 +92,7 @@ namespace System
                 catch (Exception ex)
                 {
                     local.Span.ErrorOccurred(ex, SkyApmInstances.TracingConfig);
-                    throw ex;
+                    throw;
                 }
                 finally
                 {
@@ -122,7 +124,7 @@ namespace System
                 catch (Exception ex)
                 {
                     local.Span.ErrorOccurred(ex, SkyApmInstances.TracingConfig);
-                    throw ex;
+                    throw;
                 }
                 finally
                 {
@@ -152,7 +154,7 @@ namespace System
                 catch (Exception ex)
                 {
                     local.Span.ErrorOccurred(ex, SkyApmInstances.TracingConfig);
-                    throw ex;
+                    throw;
                 }
                 finally
                 {
@@ -182,7 +184,7 @@ namespace System
                 catch (Exception ex)
                 {
                     local.Span.ErrorOccurred(ex, SkyApmInstances.TracingConfig);
-                    throw ex;
+                    throw;
                 }
                 finally
                 {
@@ -212,7 +214,7 @@ namespace System
                 catch (Exception ex)
                 {
                     local.Span.ErrorOccurred(ex, SkyApmInstances.TracingConfig);
-                    throw ex;
+                    throw;
                 }
                 finally
                 {
@@ -244,7 +246,7 @@ namespace System
                 catch (Exception ex)
                 {
                     local.Span.ErrorOccurred(ex, SkyApmInstances.TracingConfig);
-                    throw ex;
+                    throw;
                 }
                 finally
                 {
@@ -276,7 +278,7 @@ namespace System
                 catch (Exception ex)
                 {
                     local.Span.ErrorOccurred(ex, SkyApmInstances.TracingConfig);
-                    throw ex;
+                    throw;
                 }
                 finally
                 {
@@ -308,7 +310,7 @@ namespace System
                 catch (Exception ex)
                 {
                     local.Span.ErrorOccurred(ex, SkyApmInstances.TracingConfig);
-                    throw ex;
+                    throw;
                 }
                 finally
                 {
@@ -340,7 +342,7 @@ namespace System
                 catch (Exception ex)
                 {
                     local.Span.ErrorOccurred(ex, SkyApmInstances.TracingConfig);
-                    throw ex;
+                    throw;
                 }
                 finally
                 {

@@ -32,7 +32,7 @@ namespace System.Threading
             catch (Exception ex)
             {
                 local.Span.ErrorOccurred(ex, SkyApmInstances.TracingConfig);
-                throw ex;
+                throw;
             }
             finally
             {
