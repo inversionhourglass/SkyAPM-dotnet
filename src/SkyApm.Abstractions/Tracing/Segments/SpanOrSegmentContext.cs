@@ -26,11 +26,15 @@
 
         public static implicit operator SpanOrSegmentContext(SegmentSpan span)
         {
+            if (span == null) return null;
+
             return new SpanOrSegmentContext(span);
         }
 
         public static implicit operator SpanOrSegmentContext(SegmentContext segment)
         {
+            if (segment == null) return null;
+
             return new SpanOrSegmentContext(segment);
         }
     }
