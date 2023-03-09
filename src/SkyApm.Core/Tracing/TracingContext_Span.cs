@@ -33,6 +33,8 @@ namespace SkyApm.Tracing
 
         public string TraceId => _spanable ? ActiveSpan?.Segment?.TraceId : _segmentContextFactory.CurrentLocalContext?.TraceId ?? _segmentContextFactory.CurrentEntryContext?.TraceId;
 
+        public string SegmentId => _spanable ? ActiveSpan?.Segment?.SegmentId : _segmentContextFactory.CurrentLocalContext?.SegmentId ?? _segmentContextFactory.CurrentEntryContext?.SegmentId;
+
         public SpanOrSegmentContext CurrentEntry => _spanable ? (SpanOrSegmentContext)ActiveSpan : _segmentContextFactory.CurrentEntryContext;
 
         public SpanOrSegmentContext CurrentLocal => _spanable ? (SpanOrSegmentContext)ActiveSpan : _segmentContextFactory.CurrentLocalContext;

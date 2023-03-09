@@ -20,7 +20,6 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using SkyApm.Tracing;
-using SkyApm.Tracing.Segments;
 using SkyApm.Transport;
 
 namespace SkyApm.Diagnostics.MSLogging
@@ -29,14 +28,14 @@ namespace SkyApm.Diagnostics.MSLogging
     {
         private readonly string _categoryName;
         private readonly ISkyApmLogDispatcher _skyApmLogDispatcher;
-        private readonly ISegmentContextAccessor _segmentContextAccessor;
+        private readonly ITracingContext _tracingContext;
 
         public SkyApmLogger(string categoryName, ISkyApmLogDispatcher skyApmLogDispatcher,
-            ISegmentContextAccessor segmentContextAccessor)
+            ITracingContext tracingContext)
         {
             _categoryName = categoryName;
             _skyApmLogDispatcher = skyApmLogDispatcher;
-            _segmentContextAccessor = segmentContextAccessor;
+            _tracingContext = tracingContext;
         }
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception,
@@ -48,17 +47,10 @@ namespace SkyApm.Diagnostics.MSLogging
                 { "Level", logLevel },
                 { "logMessage", state.ToString() ?? "" }
             };
-            SegmentContext segmentContext = _segmentContextAccessor.Context;
             var logContext = new LoggerRequest()
             {
                 Logs = logs,
-                SegmentReference = segmentContext == null
-                    ? null
-                    : new LoggerSegmentReference()
-                    {
-                        TraceId = segmentContext.TraceId,
-                        SegmentId = segmentContext.SegmentId
-                    },
+                SegmentReference = GetReference(),
             };
             _skyApmLogDispatcher.Dispatch(logContext);
         }
@@ -67,5 +59,16 @@ namespace SkyApm.Diagnostics.MSLogging
 
 
         public IDisposable BeginScope<TState>(TState state) => default!;
+
+        private LoggerSegmentReference GetReference()
+        {
+            return _tracingContext.TraceId == null || _tracingContext.SegmentId == null ?
+                null :
+                new LoggerSegmentReference
+                {
+                    TraceId = _tracingContext.TraceId,
+                    SegmentId = _tracingContext.SegmentId
+                };
+        }
     }
 }

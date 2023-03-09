@@ -2,8 +2,13 @@
     <Import Project="..\..\build\common.props" />
     <PropertyGroup>
         <TargetFrameworks>netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
-        <RootNamespace>SkyApm.Diagnostics.MSLogging</RootNamespace>
-    </PropertyGroup>
+		<Description>$(PackagePrefix).Diagnostics.MSLogging notifies of logging messages.</Description>
+		<AssemblyTitle>$(PackagePrefix).Diagnostics.MSLogging</AssemblyTitle>
+		<AssemblyName>$(PackagePrefix).Diagnostics.MSLogging</AssemblyName>
+		<PackageId>$(PackagePrefix).Diagnostics.MSLogging</PackageId>
+		<PackageTags>SkyWalking;APM;Logging</PackageTags>
+		<RootNamespace>SkyApm.Diagnostics.MSLogging</RootNamespace>
+	</PropertyGroup>
     <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.0" />
     </ItemGroup>

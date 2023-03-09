@@ -6,6 +6,8 @@ namespace SkyApm.Tracing
     {
         string TraceId { get; }
 
+        string SegmentId { get; }
+
         SpanOrSegmentContext CurrentEntry { get; }
 
         SpanOrSegmentContext CurrentLocal { get; }
