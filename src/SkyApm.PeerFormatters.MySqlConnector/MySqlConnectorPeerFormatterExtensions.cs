@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Licensed to the SkyAPM under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -16,23 +16,26 @@
  *
  */
 
-using SkyApm.Tracing.Segments;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using SkyApm.Tracing;
+using SkyApm.Utilities.DependencyInjection;
+using System;
 
-namespace SkyApm.Tracing
+namespace SkyApm.PeerFormatters.MySqlConnector
 {
-    public interface ITracingContext
+    public static class MySqlConnectorPeerFormatterExtensions
     {
-        SegmentContext CreateEntrySegmentContext(string operationName, ICarrierHeaderCollection carrierHeader, long startTimeMilliseconds = default);
+        public static SkyApmExtensions AddMySqlConnectorPeerFormatter(this SkyApmExtensions extensions)
+        {
+            if (extensions == null)
+            {
+                throw new ArgumentNullException(nameof(extensions));
+            }
 
-        SegmentContext CreateLocalSegmentContext(string operationName, long startTimeMilliseconds = default);
+            extensions.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IDbPeerFormatter, MySqlConnectorPeerFormatter>());
 
-        SegmentContext CreateExitSegmentContext(string operationName, string networkAddress,
-            ICarrierHeaderCollection carrierHeader = default, long startTimeMilliseconds = default);
-
-        void Release(SegmentContext segmentContext, long endTimeMilliseconds = default);
-
-        void ClearContext();
-
-        void WeakenContext();
+            return extensions;
+        }
     }
 }

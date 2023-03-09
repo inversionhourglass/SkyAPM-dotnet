@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Licensed to the SkyAPM under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -16,23 +16,15 @@
  *
  */
 
-using SkyApm.Tracing.Segments;
+using SkyApm.Config;
+using SkyApm.Tracing;
 
-namespace SkyApm.Tracing
+namespace SkyApm.Utilities.StaticAccessor
 {
-    public interface ITracingContext
+    public static class SkyApmInstances
     {
-        SegmentContext CreateEntrySegmentContext(string operationName, ICarrierHeaderCollection carrierHeader, long startTimeMilliseconds = default);
+        public static ITracingContext TracingContext { get; internal set; } = new NullTracingContext();
 
-        SegmentContext CreateLocalSegmentContext(string operationName, long startTimeMilliseconds = default);
-
-        SegmentContext CreateExitSegmentContext(string operationName, string networkAddress,
-            ICarrierHeaderCollection carrierHeader = default, long startTimeMilliseconds = default);
-
-        void Release(SegmentContext segmentContext, long endTimeMilliseconds = default);
-
-        void ClearContext();
-
-        void WeakenContext();
+        public static IConfigAccessor ConfigAccessor { get; internal set; } = new NullConfigAccessor();
     }
 }

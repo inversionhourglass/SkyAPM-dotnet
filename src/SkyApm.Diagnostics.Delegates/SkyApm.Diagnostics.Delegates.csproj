@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\build\common.props" />
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
+	<LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Description>$(PackagePrefix).Diagnostics.Delegates notifies of Delegates messages.</Description>
+    <AssemblyTitle>$(PackagePrefix).Diagnostics.Delegates</AssemblyTitle>
+    <AssemblyName>$(PackagePrefix).Diagnostics.Delegates</AssemblyName>
+    <PackageId>$(PackagePrefix).Diagnostics.Delegates</PackageId>
+    <PackageTags>SkyWalking;APM</PackageTags>
+    <RootNamespace>SkyApm.Diagnostics.Delegates</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Delegates.Extensions.Diagnostics" Version="0.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SkyApm.Abstractions\SkyApm.Abstractions.csproj" />
+    <ProjectReference Include="..\SkyApm.Core\SkyApm.Core.csproj" />
+    <ProjectReference Include="..\SkyApm.Utilities.DependencyInjection\SkyApm.Utilities.DependencyInjection.csproj" />
+  </ItemGroup>
+
+</Project>

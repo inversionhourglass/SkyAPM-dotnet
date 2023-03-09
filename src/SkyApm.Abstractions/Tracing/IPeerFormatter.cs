@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Licensed to the SkyAPM under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -16,23 +16,15 @@
  *
  */
 
-using SkyApm.Tracing.Segments;
+using System;
+using System.Collections.Generic;
+using System.Data.Common;
+using System.Text;
 
 namespace SkyApm.Tracing
 {
-    public interface ITracingContext
+    public interface IPeerFormatter
     {
-        SegmentContext CreateEntrySegmentContext(string operationName, ICarrierHeaderCollection carrierHeader, long startTimeMilliseconds = default);
-
-        SegmentContext CreateLocalSegmentContext(string operationName, long startTimeMilliseconds = default);
-
-        SegmentContext CreateExitSegmentContext(string operationName, string networkAddress,
-            ICarrierHeaderCollection carrierHeader = default, long startTimeMilliseconds = default);
-
-        void Release(SegmentContext segmentContext, long endTimeMilliseconds = default);
-
-        void ClearContext();
-
-        void WeakenContext();
+        string GetDbPeer(DbConnection connection);
     }
 }

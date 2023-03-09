@@ -113,6 +113,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkyApm.Diagnostics.MSLoggin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkyApm.Sample.Logging", "sample\SkyApm.Sample.Logging\SkyApm.Sample.Logging.csproj", "{136EAD07-A501-4308-9972-82E44F655735}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SkyApm.Utilities.StaticAccessor", "src\SkyApm.Utilities.StaticAccessor\SkyApm.Utilities.StaticAccessor.csproj", "{A26DD87B-4CD2-4DCE-9904-5D4593A3E704}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PeerFormatters", "PeerFormatters", "{D122E6AE-6FE7-4C1A-826F-5964ABBF2C9D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SkyApm.PeerFormatters.SqlClient", "src\SkyApm.PeerFormatters.SqlClient\SkyApm.PeerFormatters.SqlClient.csproj", "{5DBE2053-EBAE-404F-A7B3-9CE3CD2152D9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SkyApm.PeerFormatters.MySqlConnector", "src\SkyApm.PeerFormatters.MySqlConnector\SkyApm.PeerFormatters.MySqlConnector.csproj", "{2A313B7E-CC41-4556-8055-D87266C398BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkyApm.Diagnostics.Delegates", "src\SkyApm.Diagnostics.Delegates\SkyApm.Diagnostics.Delegates.csproj", "{D81F9D10-3F2A-4EEA-AC7C-4EBE4DD1AFD0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -255,6 +265,22 @@ Global
 		{136EAD07-A501-4308-9972-82E44F655735}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{136EAD07-A501-4308-9972-82E44F655735}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{136EAD07-A501-4308-9972-82E44F655735}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A26DD87B-4CD2-4DCE-9904-5D4593A3E704}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A26DD87B-4CD2-4DCE-9904-5D4593A3E704}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A26DD87B-4CD2-4DCE-9904-5D4593A3E704}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A26DD87B-4CD2-4DCE-9904-5D4593A3E704}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DBE2053-EBAE-404F-A7B3-9CE3CD2152D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DBE2053-EBAE-404F-A7B3-9CE3CD2152D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DBE2053-EBAE-404F-A7B3-9CE3CD2152D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DBE2053-EBAE-404F-A7B3-9CE3CD2152D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A313B7E-CC41-4556-8055-D87266C398BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A313B7E-CC41-4556-8055-D87266C398BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A313B7E-CC41-4556-8055-D87266C398BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A313B7E-CC41-4556-8055-D87266C398BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D81F9D10-3F2A-4EEA-AC7C-4EBE4DD1AFD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D81F9D10-3F2A-4EEA-AC7C-4EBE4DD1AFD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D81F9D10-3F2A-4EEA-AC7C-4EBE4DD1AFD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D81F9D10-3F2A-4EEA-AC7C-4EBE4DD1AFD0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -303,6 +329,11 @@ Global
 		{B1EF3295-4BF0-489F-8063-C9E3DAE20AA9} = {844CEACD-4C85-4B15-9E2B-892B01FDA4BB}
 		{4E3BA76C-2A30-4CAD-9F6C-08DF5DF0CE0C} = {B5E677CF-2920-4B0A-A056-E73F6B2CF2BC}
 		{136EAD07-A501-4308-9972-82E44F655735} = {844CEACD-4C85-4B15-9E2B-892B01FDA4BB}
+		{A26DD87B-4CD2-4DCE-9904-5D4593A3E704} = {4BD917BC-D579-4C75-9939-41BF012A4EE2}
+		{D122E6AE-6FE7-4C1A-826F-5964ABBF2C9D} = {05BF0D4E-C824-4EC8-8330-36C1FC49910E}
+		{5DBE2053-EBAE-404F-A7B3-9CE3CD2152D9} = {D122E6AE-6FE7-4C1A-826F-5964ABBF2C9D}
+		{2A313B7E-CC41-4556-8055-D87266C398BF} = {D122E6AE-6FE7-4C1A-826F-5964ABBF2C9D}
+		{D81F9D10-3F2A-4EEA-AC7C-4EBE4DD1AFD0} = {B5E677CF-2920-4B0A-A056-E73F6B2CF2BC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {94C0DA2C-CCCB-4314-93A2-9809B5DD0583}

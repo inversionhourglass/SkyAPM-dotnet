@@ -16,31 +16,32 @@
  *
  */
 
-using SkyApm.Common;
 using SkyApm.Tracing;
-using System.Data.Common;
+using SkyApm.Tracing.Segments;
 
-namespace SkyApm.Diagnostics.EntityFrameworkCore
+namespace SkyApm.Utilities.StaticAccessor
 {
-    public class NpgsqlEntityFrameworkCoreSpanMetadataProvider : IEntityFrameworkCoreSpanMetadataProvider
+    internal class NullTracingContext : ITracingContext
     {
-        private readonly IPeerFormatter _peerFormatter;
+        public SegmentContext CreateEntrySegmentContext(string operationName, ICarrierHeaderCollection carrierHeader, long startTimeMilliseconds = 0) => NullInstances.SegmentContext;
 
-        public NpgsqlEntityFrameworkCoreSpanMetadataProvider(IPeerFormatter peerFormatter)
+        public SegmentContext CreateExitSegmentContext(string operationName, string networkAddress, ICarrierHeaderCollection carrierHeader = null, long startTimeMilliseconds = 0) => NullInstances.SegmentContext;
+
+        public SegmentContext CreateLocalSegmentContext(string operationName, long startTimeMilliseconds = 0) => NullInstances.SegmentContext;
+
+        public void Release(SegmentContext segmentContext, long endTimeMilliseconds = 0)
         {
-            _peerFormatter = peerFormatter;
+
         }
 
-        public StringOrIntValue Component { get; } = Common.Components.NPGSQL_ENTITYFRAMEWORKCORE_POSTGRESQL;
-
-        public bool Match(DbConnection connection)
+        public void ClearContext()
         {
-            return connection.GetType().FullName == "Npgsql.NpgsqlConnection";
+
         }
 
-        public string GetPeer(DbConnection connection)
+        public void WeakenContext()
         {
-            return _peerFormatter.GetDbPeer(connection);
+
         }
     }
 }
