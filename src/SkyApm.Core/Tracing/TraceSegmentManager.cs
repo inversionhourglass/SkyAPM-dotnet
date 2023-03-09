@@ -22,6 +22,8 @@ namespace SkyApm.Tracing
             _instrumentConfig = configAccessor.Get<InstrumentConfig>();
         }
 
+        public SegmentSpan FirstSpan => _traceSegments.Value?.FirstSpan;
+
         public SegmentSpan ActiveSpan => _traceSegments.Value?.CurrentSpan;
 
         public SegmentSpan CreateEntrySpan(string operationName, ICarrier carrier, long startTimeMilliseconds = 0)

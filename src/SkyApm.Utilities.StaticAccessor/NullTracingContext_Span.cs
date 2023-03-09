@@ -9,7 +9,9 @@ namespace SkyApm.Utilities.StaticAccessor
 
         public string? SegmentId => null;
 
-        public SegmentSpan ActiveSpan => NullInstances.SegmentSpan;
+        public SpanOrSegmentContext First => NullInstances.SpanOrSegmentContext;
+
+        public SpanOrSegmentContext Current => NullInstances.SpanOrSegmentContext;
 
         public SpanOrSegmentContext CurrentEntry => NullInstances.SpanOrSegmentContext;
 

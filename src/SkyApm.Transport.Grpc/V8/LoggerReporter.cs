@@ -86,6 +86,7 @@ namespace SkyApm.Transport.Grpc
                             {
                                 TraceId = loggerRequest.SegmentReference.TraceId,
                                 TraceSegmentId = loggerRequest.SegmentReference.SegmentId,
+                                SpanId = loggerRequest.SegmentReference.SpanId,
                             };
                         }
                         foreach (var tag in loggerRequest.Tags)

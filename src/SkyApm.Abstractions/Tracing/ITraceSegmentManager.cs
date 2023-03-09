@@ -5,6 +5,8 @@ namespace SkyApm.Tracing
 {
     public interface ITraceSegmentManager
     {
+        SegmentSpan FirstSpan { get; }
+
         SegmentSpan ActiveSpan { get; }
 
         SegmentSpan CreateEntrySpan(string operationName, ICarrier carrier, long startTimeMilliseconds = default);

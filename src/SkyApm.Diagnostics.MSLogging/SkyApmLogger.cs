@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Microsoft.Extensions.Logging;
 using SkyApm.Tracing;
+using SkyApm.Tracing.Segments;
 using SkyApm.Transport;
 
 namespace SkyApm.Diagnostics.MSLogging
@@ -58,9 +59,9 @@ namespace SkyApm.Diagnostics.MSLogging
                 Tags = tags,
                 SegmentReference = GetReference(),
             };
-            if (_tracingContext.CurrentEntry != null)
+            if (_tracingContext.First != null && _tracingContext.First.Span.SpanType == SpanType.Entry)
             {
-                logContext.Endpoint = _tracingContext.CurrentEntry.Span.OperationName.ToString();
+                logContext.Endpoint = _tracingContext.First.Span.OperationName.ToString();
             }
             _skyApmLogDispatcher.Dispatch(logContext);
         }
@@ -77,7 +78,8 @@ namespace SkyApm.Diagnostics.MSLogging
                 new LoggerSegmentReference
                 {
                     TraceId = _tracingContext.TraceId,
-                    SegmentId = _tracingContext.SegmentId
+                    SegmentId = _tracingContext.SegmentId,
+                    SpanId = _tracingContext.Current.Span.SpanId,
                 };
         }
     }

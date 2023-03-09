@@ -38,5 +38,7 @@ namespace SkyApm.Transport
         public string SegmentId { get; set; }
 
         public string TraceId { get; set; }
+
+        public int SpanId { get; set; }
     }
 }

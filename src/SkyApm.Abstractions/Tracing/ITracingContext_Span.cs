@@ -8,6 +8,10 @@ namespace SkyApm.Tracing
 
         string SegmentId { get; }
 
+        SpanOrSegmentContext First { get; }
+
+        SpanOrSegmentContext Current { get; }
+
         SpanOrSegmentContext CurrentEntry { get; }
 
         SpanOrSegmentContext CurrentLocal { get; }
