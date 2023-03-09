@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Microsoft.Extensions.Logging;
 using SkyApm.Tracing;
 using SkyApm.Transport;
@@ -41,17 +42,26 @@ namespace SkyApm.Diagnostics.MSLogging
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception,
             Func<TState, Exception?, string> formatter)
         {
-            var logs = new Dictionary<string, object>
+            var tags = new Dictionary<string, object>
             {
-                { "className", _categoryName },
+                { "logger", _categoryName },
                 { "Level", logLevel },
-                { "logMessage", state.ToString() ?? "" }
+                { "thread", Thread.CurrentThread.ManagedThreadId },
             };
+            if (exception != null)
+            {
+                tags["errorType"] = exception.GetType().ToString();
+            }
             var logContext = new LoggerRequest()
             {
-                Logs = logs,
+                Message = state.ToString() ?? string.Empty,
+                Tags = tags,
                 SegmentReference = GetReference(),
             };
+            if (_tracingContext.CurrentEntry != null)
+            {
+                logContext.Endpoint = _tracingContext.CurrentEntry.Span.OperationName.ToString();
+            }
             _skyApmLogDispatcher.Dispatch(logContext);
         }
 

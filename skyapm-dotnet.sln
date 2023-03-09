@@ -109,9 +109,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SkyApm.Diagnostics.FreeSql"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SkyApm.Sample.FreeSqlSqlite", "sample\SkyApm.Sample.FreeSql\SkyApm.Sample.FreeSqlSqlite.csproj", "{B1EF3295-4BF0-489F-8063-C9E3DAE20AA9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkyApm.Diagnostics.MSLogging", "src\SkyApm.Diagnostics.MSLogging\SkyApm.Diagnostics.MSLogging.csproj", "{4E3BA76C-2A30-4CAD-9F6C-08DF5DF0CE0C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SkyApm.Diagnostics.MSLogging", "src\SkyApm.Diagnostics.MSLogging\SkyApm.Diagnostics.MSLogging.csproj", "{4E3BA76C-2A30-4CAD-9F6C-08DF5DF0CE0C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkyApm.Sample.Logging", "sample\SkyApm.Sample.Logging\SkyApm.Sample.Logging.csproj", "{136EAD07-A501-4308-9972-82E44F655735}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SkyApm.Sample.Logging", "sample\SkyApm.Sample.Logging\SkyApm.Sample.Logging.csproj", "{136EAD07-A501-4308-9972-82E44F655735}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SkyApm.Utilities.StaticAccessor", "src\SkyApm.Utilities.StaticAccessor\SkyApm.Utilities.StaticAccessor.csproj", "{A26DD87B-4CD2-4DCE-9904-5D4593A3E704}"
 EndProject
