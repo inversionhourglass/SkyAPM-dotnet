@@ -20,6 +20,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Microsoft.Extensions.Logging;
+using SkyApm.Common;
+using SkyApm.Config;
 using SkyApm.Tracing;
 using SkyApm.Tracing.Segments;
 using SkyApm.Transport;
@@ -31,18 +33,25 @@ namespace SkyApm.Diagnostics.MSLogging
         private readonly string _categoryName;
         private readonly ISkyApmLogDispatcher _skyApmLogDispatcher;
         private readonly ITracingContext _tracingContext;
+        private readonly TracingConfig _tracingConfig;
+        private readonly LogCollectorConfig _logCollectorConfig;
 
         public SkyApmLogger(string categoryName, ISkyApmLogDispatcher skyApmLogDispatcher,
-            ITracingContext tracingContext)
+            ITracingContext tracingContext,
+            IConfigAccessor configAccessor)
         {
             _categoryName = categoryName;
             _skyApmLogDispatcher = skyApmLogDispatcher;
             _tracingContext = tracingContext;
+            _tracingConfig = configAccessor.Get<TracingConfig>();
+            _logCollectorConfig = configAccessor.Get<LogCollectorConfig>();
         }
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception,
             Func<TState, Exception?, string> formatter)
         {
+            if (!IsEnabled(logLevel)) return;
+
             var tags = new Dictionary<string, object>
             {
                 { "logger", _categoryName },
@@ -53,9 +62,14 @@ namespace SkyApm.Diagnostics.MSLogging
             {
                 tags["errorType"] = exception.GetType().ToString();
             }
+            var message = state.ToString();
+            if (exception != null)
+            {
+                message += "\r\n" + (exception.HasInnerExceptions() ? exception.ToDemystifiedString(_tracingConfig.ExceptionMaxDepth) : exception.ToString());
+            }
             var logContext = new LoggerRequest()
             {
-                Message = state.ToString() ?? string.Empty,
+                Message = message ?? string.Empty,
                 Tags = tags,
                 SegmentReference = GetReference(),
             };
@@ -66,7 +80,7 @@ namespace SkyApm.Diagnostics.MSLogging
             _skyApmLogDispatcher.Dispatch(logContext);
         }
 
-        public bool IsEnabled(LogLevel logLevel) => true;
+        public bool IsEnabled(LogLevel logLevel) => (int)logLevel >= (int)_logCollectorConfig.Level;
 
 
         public IDisposable BeginScope<TState>(TState state) => default!;

@@ -18,6 +18,7 @@
 
 using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
+using SkyApm.Config;
 using SkyApm.Tracing;
 using SkyApm.Transport;
 
@@ -28,12 +29,15 @@ namespace SkyApm.Diagnostics.MSLogging
         private readonly ConcurrentDictionary<string, SkyApmLogger> _doveLoggers = new ConcurrentDictionary<string, SkyApmLogger>();
         private readonly ISkyApmLogDispatcher _skyApmLogDispatcher;
         private readonly ITracingContext _tracingContext;
+        private readonly IConfigAccessor _configAccessor;
 
         public SkyApmLoggerProvider(ISkyApmLogDispatcher skyApmLogDispatcher,
-            ITracingContext tracingContext)
+            ITracingContext tracingContext,
+            IConfigAccessor configAccessor)
         {
             _skyApmLogDispatcher = skyApmLogDispatcher;
             _tracingContext = tracingContext;
+            _configAccessor = configAccessor;
         }
 
         public void Dispose()
@@ -43,7 +47,7 @@ namespace SkyApm.Diagnostics.MSLogging
         public ILogger CreateLogger(string categoryName)
         {
             return _doveLoggers.GetOrAdd(categoryName,
-                _ => new SkyApmLogger(categoryName, _skyApmLogDispatcher, _tracingContext));
+                _ => new SkyApmLogger(categoryName, _skyApmLogDispatcher, _tracingContext, _configAccessor));
         }
     }
 }
