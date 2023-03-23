@@ -18,7 +18,6 @@
 
 using System.Collections.Generic;
 using System.Data.Common;
-using SkyApm.Common;
 using SkyApm.Tracing;
 using SkyApm.Tracing.Segments;
 
@@ -40,7 +39,9 @@ namespace SkyApm.Diagnostics.EntityFrameworkCore
         public SpanOrSegmentContext GetCurrentContext(DbCommand dbCommand)
         {
             foreach (var provider in _spanMetadataProviders)
-                if (provider.Match(dbCommand.Connection))
+                if (IsMSSQL(dbCommand.Connection))
+                    return null;
+                else if (provider.Match(dbCommand.Connection))
                     return _tracingContext.CurrentExit;
 
             return _tracingContext.CurrentLocal;
@@ -49,7 +50,9 @@ namespace SkyApm.Diagnostics.EntityFrameworkCore
         public SpanOrSegmentContext Create(string operationName, DbCommand dbCommand)
         {
             foreach (var provider in _spanMetadataProviders)
-                if (provider.Match(dbCommand.Connection))
+                if (IsMSSQL(dbCommand.Connection))
+                    return null;
+                else if (provider.Match(dbCommand.Connection))
                     return CreateExitSegment(operationName, dbCommand, provider);
 
             return CreateLocalSegment(operationName, dbCommand);
@@ -57,6 +60,8 @@ namespace SkyApm.Diagnostics.EntityFrameworkCore
 
         public void Release(SpanOrSegmentContext context)
         {
+            if (context == null) return;
+
             _tracingContext.Finish(context);
         }
 
@@ -74,6 +79,12 @@ namespace SkyApm.Diagnostics.EntityFrameworkCore
             var context = _tracingContext.CreateLocal(operationName);
             context.Span.Component = Common.Components.ENTITYFRAMEWORKCORE;
             return context;
+        }
+
+        private bool IsMSSQL(DbConnection connection)
+        {
+            var fullName = connection.GetType().ToString();
+            return fullName == "System.Data.SqlClient.SqlConnection" || fullName == "Microsoft.Data.SqlClient.SqlConnection";
         }
     }
 }
