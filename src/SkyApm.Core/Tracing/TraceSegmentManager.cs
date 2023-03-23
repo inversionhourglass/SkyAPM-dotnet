@@ -60,7 +60,7 @@ namespace SkyApm.Tracing
                 }
                 traceSegment = CreateSegment(operationName, carrier);
                 span = traceSegment.CreateEntrySpan(operationName, startTimeMilliseconds);
-                span.AsyncLink();
+                span.AsyncLink(carrier);
                 _traceSegments.Value = traceSegment;
             }
             if (segmentReference != null)
@@ -93,8 +93,8 @@ namespace SkyApm.Tracing
                 // The parent span is complete, try create a new segment to associate with parent.
                 var carrier = _currentSpanRecord.Value.GetCrossThreadCarrier();
                 traceSegment = CreateSegment(operationName, carrier);
-                span = traceSegment.CreateEntrySpan(operationName, startTimeMilliseconds);
-                span.AsyncLink();
+                span = traceSegment.CreateLocalSpan(operationName, startTimeMilliseconds);
+                span.AsyncLink(carrier);
                 if (carrier != null)
                 {
                     span.References.Add(carrier);
@@ -142,8 +142,8 @@ namespace SkyApm.Tracing
                 // The parent span is complete, try create a new segment to associate with parent.
                 var carrier = _currentSpanRecord.Value.GetCrossThreadCarrier();
                 traceSegment = CreateSegment(operationName, carrier);
-                span = traceSegment.CreateEntrySpan(operationName, startTimeMilliseconds);
-                span.AsyncLink();
+                span = traceSegment.CreateExitSpan(operationName, startTimeMilliseconds);
+                span.AsyncLink(carrier);
                 if (carrier != null)
                 {
                     span.References.Add(carrier);
