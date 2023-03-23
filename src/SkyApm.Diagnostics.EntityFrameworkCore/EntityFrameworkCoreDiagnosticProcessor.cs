@@ -67,11 +67,14 @@ namespace SkyApm.Diagnostics.EntityFrameworkCore
         {
             var operationName = OperationNameResolver(eventData);
             var context = _contextFactory.Create(operationName, eventData.Command);
-            context.Span.SpanLayer = Tracing.Segments.SpanLayer.DB;
-            context.Span.AddTag(Common.Tags.DB_TYPE, "Sql");
-            context.Span.AddTag(Common.Tags.DB_INSTANCE, eventData.Command.Connection.Database);
-            context.Span.AddTag(Common.Tags.DB_STATEMENT, eventData.Command.CommandText);
-            context.Span.AddTag(Common.Tags.DB_BIND_VARIABLES, BuildParameterVariables(eventData.Command.Parameters));
+            if (context != null)
+            {
+                context.Span.SpanLayer = Tracing.Segments.SpanLayer.DB;
+                context.Span.AddTag(Common.Tags.DB_TYPE, "Sql");
+                context.Span.AddTag(Common.Tags.DB_INSTANCE, eventData.Command.Connection.Database);
+                context.Span.AddTag(Common.Tags.DB_STATEMENT, eventData.Command.CommandText);
+                context.Span.AddTag(Common.Tags.DB_BIND_VARIABLES, BuildParameterVariables(eventData.Command.Parameters));
+            }
         }
 
         [DiagnosticName("Microsoft.EntityFrameworkCore.Database.Command.CommandExecuted")]

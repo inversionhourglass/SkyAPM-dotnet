@@ -18,7 +18,6 @@
 
 using System.Collections.Generic;
 using System.Data.Common;
-using SkyApm.Common;
 using SkyApm.Tracing;
 using SkyApm.Tracing.Segments;
 
@@ -45,7 +44,9 @@ namespace SkyApm.Diagnostics.EntityFrameworkCore
         public SegmentContext GetCurrentContext(DbCommand dbCommand)
         {
             foreach (var provider in _spanMetadataProviders)
-                if (provider.Match(dbCommand.Connection))
+                if (IsMSSQL(dbCommand.Connection))
+                    return null;
+                else if (provider.Match(dbCommand.Connection))
                     return _exitSegmentContextAccessor.Context;
 
             return _localSegmentContextAccessor.Context;
@@ -54,7 +55,9 @@ namespace SkyApm.Diagnostics.EntityFrameworkCore
         public SegmentContext Create(string operationName, DbCommand dbCommand)
         {
             foreach (var provider in _spanMetadataProviders)
-                if (provider.Match(dbCommand.Connection))
+                if (IsMSSQL(dbCommand.Connection))
+                    return null;
+                else if (provider.Match(dbCommand.Connection))
                     return CreateExitSegment(operationName, dbCommand, provider);
 
             return CreateLocalSegment(operationName, dbCommand);
@@ -62,6 +65,8 @@ namespace SkyApm.Diagnostics.EntityFrameworkCore
 
         public void Release(SegmentContext segmentContext)
         {
+            if (segmentContext == null) return;
+
             _tracingContext.Release(segmentContext);
         }
 
@@ -79,6 +84,12 @@ namespace SkyApm.Diagnostics.EntityFrameworkCore
             var context = _tracingContext.CreateLocalSegmentContext(operationName);
             context.Span.Component = Common.Components.ENTITYFRAMEWORKCORE;
             return context;
+        }
+
+        private bool IsMSSQL(DbConnection connection)
+        {
+            var fullName = connection.GetType().ToString();
+            return fullName == "System.Data.SqlClient.SqlConnection" || fullName == "Microsoft.Data.SqlClient.SqlConnection";
         }
     }
 }
